@@ -5,7 +5,7 @@ import Data.Tuple
 
 -- Scrabble data type
 
-data SValid = Valid | Invalid | NotSet | PartOfInvalid
+data SValid = Valid | Invalid | NotSet | PartOfInvalid deriving(Eq)
 
 instance Show SValid where 
      show Valid   = "Valid"
@@ -21,7 +21,7 @@ data SChar = SChar {
                    } 
 
 instance Show SChar where
-     show s = concat ["SChar ",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
+     show s = concat ["",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
 
 
 type SWord = [SChar]

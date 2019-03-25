@@ -22,6 +22,7 @@ beginWordsCheck dictionary = do
             -- test 
             putStrLn . show $ validWords x dictionary
 
+initializeDictionary :: IO (Set String)
 initializeDictionary = do
     dictionaryRaw <- readFile "./sjp/slowa.txt"
     return $ Set.fromList $ words dictionaryRaw

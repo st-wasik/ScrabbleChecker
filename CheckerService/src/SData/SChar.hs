@@ -2,16 +2,20 @@ module SData.SChar where
 
 import Data.Matrix as Mx
 import Data.Tuple
+import Data.Char as C
 
 -- Scrabble data type
 
-data SValid = Valid | Invalid | NotSet | PartOfInvalid deriving(Eq)
+data SValid = Valid | Invalid | NotSet | PartOfInvalid | SingleLetter deriving(Eq)
+
+sValidShortShow = True 
 
 instance Show SValid where 
-     show Valid   = "Valid"
-     show Invalid = "Invalid"
-     show NotSet  = "NotSet"
-     show PartOfInvalid = "PartOfInvalid"
+     show Valid   = if sValidShortShow then "√" else "Valid"
+     show Invalid = if sValidShortShow then "×" else "Invalid"
+     show NotSet  = if sValidShortShow then "" else "NotSet"
+     show PartOfInvalid = if sValidShortShow then "⊗" else "PartOfInvalid"
+     show SingleLetter = if sValidShortShow then "^" else "SingleLetter"
 
 
 data SChar = SChar {
@@ -21,7 +25,9 @@ data SChar = SChar {
                    } 
 
 instance Show SChar where
-     show s = concat ["",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
+     --show s = concat ["",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
+     show s = concat [filter (/='\'') . show . C.toUpper $ letter s, " ", show $ valid s, "  "]
+     --show s = concat [show $ letter s, show $ position s]
 
 
 type SWord = [SChar]

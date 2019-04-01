@@ -1,8 +1,8 @@
 Button {
-    BackgroundColor = rgba(180, 180, 180, 215);
+    BackgroundColor = rgba(245,245,220, 215);
     BackgroundColorHover = rgba(190, 190, 190, 215);
     BackgroundColorDown = rgba(150, 150, 150, 215);
-    TextColor = rgba(255, 255, 255, 215);
+    TextColor = rgba(0, 0, 0, 215);
     TextColorHover = rgba(255, 255, 255, 235);
     TextColorDown = rgba(255, 255, 255, 235);
     BorderColor = rgba(240, 240, 240, 215);

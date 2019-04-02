@@ -13,7 +13,7 @@ private:
 	sf::Texture t, star;
 	std::vector<sf::RectangleShape> shapes;
 
-	tgui::Gui gui;
+	tgui::Gui board;
 	tgui::Theme theme;
 
 	tgui::Font font;

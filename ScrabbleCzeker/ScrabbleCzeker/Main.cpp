@@ -1,10 +1,10 @@
-#include "Main.h"
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <vector>
 
-void buildBoard(sf::RenderWindow &window)
+std::vector<sf::RectangleShape> buildBoard(sf::RenderWindow &window)
 {
+	std::vector<sf::RectangleShape> toBuild;
 	std::vector<std::vector<int>> board =
 	{
 		{2,0,0,3,0,0,0,2,0,0,0,3,0,0,2},
@@ -24,8 +24,8 @@ void buildBoard(sf::RenderWindow &window)
 		{2,0,0,3,0,0,0,2,0,0,0,3,0,0,2}
 	};
 	sf::RectangleShape background(sf::Vector2f(980, 980));
-	background.setFillColor(sf::Color::White);
-	window.draw(background);
+	background.setFillColor(sf::Color::Black);
+	toBuild.push_back(background);
 	for (int i = 0; i < board.size(); i++)
 	{
 		for (int j = 0; j < board[i].size(); j++)
@@ -33,25 +33,27 @@ void buildBoard(sf::RenderWindow &window)
 			sf::RectangleShape field(sf::Vector2f(60, 60));
 			field.setPosition((1 + j) * 5 + j * 60, (1 + i) * 5 + i * 60);
 			if (board[i][j] == 0)
-			field.setFillColor(sf::Color::Green);
+			field.setFillColor(sf::Color(13,132,105));
 			if (board[i][j] == 1)
-			field.setFillColor(sf::Color::Yellow);
+			field.setFillColor(sf::Color(246,156,156));
 			if (board[i][j] == 2)
-			field.setFillColor(sf::Color::Red);
+			field.setFillColor(sf::Color(224,65,86));
 			if (board[i][j] == 3)
-			field.setFillColor(sf::Color::Cyan);
+			field.setFillColor(sf::Color(144,193,211));
 			if (board[i][j] == 4)
-			field.setFillColor(sf::Color::Blue);
+			field.setFillColor(sf::Color(29,124,194));
 			if (board[i][j] == 5)
-			field.setFillColor(sf::Color::Magenta);
-			window.draw(field);
+			field.setFillColor(sf::Color(223,201,202));
+			toBuild.push_back(field);
 		}
 	}
+	return toBuild;
 }
 
-void addBlank(tgui::Gui &gui, std::string letter, int x, int y)
+void addBlank(tgui::Gui &gui, std::wstring letter, int x, int y)
 {
-	tgui::Theme theme{ "C:/Users/HP/Desktop/projekt_z/ScrabbleChecker/ScrabbleCzeker/TGUI-0.8/themes/TransparentGrey.txt" };
+	tgui::Theme theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/TransparentGrey.txt" };
+	auto font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
 	auto blank = tgui::Button::create();
 	blank->setRenderer(theme.getRenderer("Button"));
 	blank->setPosition((1 + y) * 5 + y * 60 + 3, (1 + x) * 5 + x * 60 + 3);
@@ -59,6 +61,7 @@ void addBlank(tgui::Gui &gui, std::string letter, int x, int y)
 	blank->setTextSize(38);
 	blank->setSize(54, 54);
 	blank->setEnabled(0);
+	blank->setInheritedFont(font);
 	gui.add(blank);
 }
 
@@ -67,6 +70,15 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(980, 980), "Scrable Czeker");
 
 	tgui::Gui gui( window );
+
+	std::vector<sf::RectangleShape> toBuild = buildBoard(window);
+
+	addBlank(gui, L"K", 0, 0);
+	addBlank(gui, L"O", 0, 1);
+	addBlank(gui, L"L", 0, 2);
+	addBlank(gui, L"Ê", 0, 3);
+	addBlank(gui, L"D", 0, 4);
+	addBlank(gui, L"A", 0, 5);
 
 	while (window.isOpen())
 	{
@@ -79,10 +91,10 @@ int main()
 			gui.handleEvent(event);
 		}
 		window.clear();
-		buildBoard(window);
-		addBlank(gui, "K", 0, 0);
-		addBlank(gui, "O", 0, 1);
-		addBlank(gui, "T", 0, 2);
+		for (int i = 0; i < toBuild.size(); i++)
+		{
+			window.draw(toBuild[i]);
+		}
 		gui.draw();
 		window.display();
 	}

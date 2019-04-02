@@ -16,7 +16,7 @@ Application::~Application()
 
 void Application::run()
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	shapes = buildBoard();
 
@@ -61,6 +61,13 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	star.setRepeated(true);
 	star.setSmooth(true);
 
+	//Values meaning:
+	//0 - normal field
+	//1 - letter bonus - x2
+	//2 - letter bonus - x3
+	//3 - word bonus - x2
+	//4 - word bonus - x3
+	//5 - central field (starting point)
 	std::vector<std::vector<int>> board =
 	{
 		{2,0,0,3,0,0,0,2,0,0,0,3,0,0,2},
@@ -87,20 +94,30 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 		for (int j = 0; j < board[i].size(); j++)
 		{
 			sf::RectangleShape field(sf::Vector2f(60, 60));
-			field.setPosition((1 + j) * 5 + j * 60, (1 + i) * 5 + i * 60);
-			if (board[i][j] == 0)
-				field.setFillColor(sf::Color(13, 132, 105));
-			if (board[i][j] == 1)
-				field.setFillColor(sf::Color(246, 156, 156));
-			if (board[i][j] == 2)
-				field.setFillColor(sf::Color(224, 65, 86));
-			if (board[i][j] == 3)
-				field.setFillColor(sf::Color(144, 193, 211));
-			if (board[i][j] == 4)
-				field.setFillColor(sf::Color(29, 124, 194));
-			if (board[i][j] == 5)
-				field.setFillColor(sf::Color(223, 201, 202));
-
+			field.setPosition((1.f + j) * 5 + j * 60, (1.f + i) * 5 + i * 60);
+			switch (board[i][j])
+			{
+				case 0: 
+					field.setFillColor(sf::Color(13, 132, 105));
+					break;
+				case 1:	
+					field.setFillColor(sf::Color(246, 156, 156)); 
+					break;
+				case 2:	
+					field.setFillColor(sf::Color(224, 65, 86)); 
+					break;
+				case 3:	
+					field.setFillColor(sf::Color(144, 193, 211)); 
+					break;
+				case 4: 
+					field.setFillColor(sf::Color(29, 124, 194)); 
+					break;
+				case 5:	
+					field.setFillColor(sf::Color(223, 201, 202)); 
+					break;
+				default: 
+					break;
+			}
 
 
 			// 54 is field size

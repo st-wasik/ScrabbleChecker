@@ -2,9 +2,20 @@
 #include <TGUI/TGUI.hpp>
 #include <vector>
 
+sf::Texture t, star;
+
 std::vector<sf::RectangleShape> buildBoard(sf::RenderWindow &window)
 {
 	std::vector<sf::RectangleShape> toBuild;
+
+	t.loadFromFile("../ScrabbleCzeker/textures/noise.png");
+	t.setRepeated(true);
+	t.setSmooth(true);
+
+	star.loadFromFile("../ScrabbleCzeker/textures/star.png");
+	star.setRepeated(true);
+	star.setSmooth(true);
+
 	std::vector<std::vector<int>> board =
 	{
 		{2,0,0,3,0,0,0,2,0,0,0,3,0,0,2},
@@ -43,7 +54,25 @@ std::vector<sf::RectangleShape> buildBoard(sf::RenderWindow &window)
 			if (board[i][j] == 4)
 			field.setFillColor(sf::Color(29,124,194));
 			if (board[i][j] == 5)
-			field.setFillColor(sf::Color(223,201,202));
+				field.setFillColor(sf::Color(223, 201, 202));
+
+			
+
+			// 54 is field size
+			// 64 is the texture size (% 11 to get texture border coords)
+			auto rnd = rand() % 11;
+			auto rect = sf::IntRect(rnd + 0, rnd + 0, rnd + 10, rnd + 10);
+
+			field.setTextureRect(rect);
+			field.setTexture(&t);
+
+			if (board[i][j] == 5)
+			{
+				field.setTextureRect(sf::IntRect(0, 0, 60, 60));
+				field.setTexture(&star);
+			}
+
+
 			toBuild.push_back(field);
 		}
 	}
@@ -67,7 +96,8 @@ void addBlank(tgui::Gui &gui, std::wstring letter, int x, int y)
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(980, 980), "Scrable Czeker");
+	srand(time(NULL));
+	sf::RenderWindow window(sf::VideoMode(980, 980), "Scrable Czeker", sf::Style::Close);
 
 	tgui::Gui gui( window );
 

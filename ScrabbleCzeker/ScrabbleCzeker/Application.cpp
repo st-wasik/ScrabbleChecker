@@ -92,7 +92,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	star.setRepeated(true);
 	star.setSmooth(true);
 
-	//Values meaning:
+	//Meaning of values:
 	//0 - normal field
 	//1 - letter bonus - x2
 	//2 - letter bonus - x3

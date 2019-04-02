@@ -4,7 +4,7 @@
 
 Application::Application() 
 	: window{ sf::VideoMode(980, 980), "Scrable Czeker", sf::Style::Close },  gui {window},
-		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/TransparentGrey.txt" }
+		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/Black.txt" }
 {
 	font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
 }

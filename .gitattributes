@@ -2,8 +2,8 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 * text=auto
-ScrabbleCzeker\SFML-2.5.1\* linguist-vendored
-ScrabbleCzeker\TGUI-0.8\* linguist-vendored
+ScrabbleCzeker/SFML-2.5.1/* linguist-vendored
+ScrabbleCzeker/TGUI-0.8/* linguist-vendored
 
 ###############################################################################
 # Set default behavior for command prompt diff.

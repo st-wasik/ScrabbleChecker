@@ -8,33 +8,43 @@ import SAlgorithm.SValidator as SV
 import SData.SChar as SC
 import SData.SBoard as SB
 import STest
+import Data.Char
 
 main :: IO ()
 main = do 
     dict <- initializeDictionary
-    beginWordsCheck dict
+    beginNextCheck dict
 
-beginWordsCheck :: Set [Char] -> IO ()
-beginWordsCheck dictionary = do
+beginNextCheck :: Set [Char] -> IO ()
+beginNextCheck dictionary = do
     input <- getLine
     case input of
         "exit" -> return ()
-        _ -> do
-            let scrabbleBoard = SB.fromList testList4 
-            let processedMatrix = processScrabbleBoard scrabbleBoard dictionary
-            -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-            putStrLn . show $ processedMatrix
-            putStrLn $ formatOutput processedMatrix
-            -- count points
-            beginWordsCheck dictionary
+        "t1" -> processWords dictionary testList
+        "t2" -> processWords dictionary testList2
+        "t3" -> processWords dictionary testList3
+        "t4" -> processWords dictionary testList4
+        "t5" -> processWords dictionary testList5
+        "t6" -> processWords dictionary testList6
+        otherwise -> processWords dictionary input
 
--- | Intersects matrix's rows with empty rows to improve readbility in terminal
+processWords :: Set [Char] -> String -> IO ()
+processWords dictionary words = do
+    let scrabbleBoard = SB.fromList $ List.map toLower words 
+    let (processedMatrix, points) = processScrabbleBoard scrabbleBoard dictionary
+    -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
+    putStrLn . show $ processedMatrix
+    --putStrLn $ formatOutputMatrix processedMatrix
+    putStrLn . show $ points
+    beginNextCheck dictionary
+
+-- | Intersects existing rows with empty rows to improve readbility in terminal
 intersectMx [] = []
 intersectMx (x:xs) = x:(List.take 15 $ repeat $ SC.empty (0,0)): intersectMx xs
 
 -- | Converts processed matrix to string and formats it before sending to display manager
-formatOutput :: Matrix SChar -> String
-formatOutput matrix = show filtered
+formatOutputMatrix :: Matrix SChar -> String
+formatOutputMatrix matrix = show filtered
     where
         filtered = List.map (\sc@(SChar l v p) -> if v `elem` [SingleLetter, ConnectionPoint] then SChar l Valid p else sc) allLetters
         allLetters = Mx.toList matrix

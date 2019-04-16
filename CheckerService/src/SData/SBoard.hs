@@ -21,7 +21,7 @@ empty = SData.SBoard.fromList $ repeat ' '
 updateNotConnectedWords :: Matrix SChar -> Matrix SChar
 updateNotConnectedWords matrix = result
     where
-        result = foldr (\sc mx -> Mx.setElem sc (position sc) mx) SData.SBoard.empty $ concat words
+        result = foldr (\sc mx -> Mx.setElem sc (position sc) mx) matrix $ concat words
         words = map markNotConnected $ filter (\a -> length a > 1) $ allWords matrix
         markNotConnected word = if L.any (\schar -> valid schar == ConnectionPoint) word then word else map (\(SChar l _ p) -> SChar l NotConnected p) word
 

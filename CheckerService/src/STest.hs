@@ -77,3 +77,35 @@ testList4 = "               " ++
             "        auto   " ++
             "               " ++
             "               " 
+
+testList5 = "               " ++
+            "               " ++
+            "          k    " ++
+            "          a    " ++
+            "          r    " ++
+            "    schemat    " ++
+            "          o    " ++
+            "       o  t    " ++
+            "       k  e    " ++
+            "      kotek    " ++
+            "        a a    " ++
+            "        m      " ++
+            "        auto   " ++
+            "               " ++
+            "               " 
+
+testList6 = "     a         " ++
+            "               " ++
+            "     b    k    " ++
+            "          a    " ++
+            "          r    " ++
+            "    schemat    " ++
+            "          o    " ++
+            "       o  t    " ++
+            "       k  e    " ++
+            "      kotek    " ++
+            "        a a    " ++
+            "        m      " ++
+            "        auto   " ++
+            "               " ++
+            "               " 

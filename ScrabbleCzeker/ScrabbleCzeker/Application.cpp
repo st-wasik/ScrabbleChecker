@@ -1,10 +1,9 @@
 #include "Application.h"
 
 
-
 Application::Application() 
 	: window{ sf::VideoMode(980, 980), "Scrable Czeker", sf::Style::Close },  board {window},
-		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/Black.txt" }
+		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/CheckerThemas.txt" }
 {
 	font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
 }
@@ -20,8 +19,8 @@ void Application::run()
 
 	shapes = buildBoard();
 
-	//addTile(L"K", 7, 3);
-	//addTile(L"O", 7, 4);
+	//addTile(L"K", 7, 3, 'I');
+	//addTile(L"O", 7, 4, 'P');
 	//addTile(L"L", 7, 5);
 	//addTile(L"Ê", 7, 6);
 	//addTile(L"D", 7, 7);
@@ -65,8 +64,8 @@ void Application::run()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (event.type == sf::Event::LostFocus)
-				window.close();
+			//if (event.type == sf::Event::LostFocus)
+				//window.close();
 
 			board.handleEvent(event);
 		}
@@ -172,21 +171,50 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	return toBuild;
 }
 
-void Application::addTile(std::wstring letter, int x, int y)
+void Application::addTile(const wchar_t *l, int x, int y, char status)
 {
 	//field size is 60x60
 	//tile size is 54x54
 	//with this we can see field color (type) under tile
 	auto tile = tgui::Button::create();
-	tile->setRenderer(theme.getRenderer("Button"));
+	if(status=='V')
+		tile->setRenderer(theme.getRenderer("ButtonValid"));
+	if(status=='I')
+		tile->setRenderer(theme.getRenderer("ButtonInvalid"));
+	if(status=='P')
+		tile->setRenderer(theme.getRenderer("ButtonPartOfIn"));
 	tile->setPosition((1 + y) * 5 + y * 60 + 3, (1 + x) * 5 + x * 60 + 3);
-	tile->setText(letter);
+	tile->setText(l);
 	tile->setTextSize(38);
 	tile->setSize(54, 54);
 	tile->setEnabled(0);
 	tile->setInheritedFont(font);
 	board.add(tile);
+
+	letter var;
+	var.chr = l;
+	var.status = status;
+	var.tile = tile;
+	tiles[x][y] = var;
 }
 
-
+void Application::clearInvalid()
+{
+	for (int i = 0; i < 15; i++)
+		for (int j = 0; j < 15; j++)
+		{
+			if (tiles[i][j].status == 'I')
+			{
+				board.remove(tiles[i][j].tile);
+				tiles[i][j].chr = nullptr;
+				tiles[i][j].tile = nullptr;
+				tiles[i][j].status = 'B';
+			}
+			if (tiles[i][j].status == 'P')
+			{
+				tiles[i][j].tile->setRenderer(theme.getRenderer("ButtonValid"));
+				tiles[i][j].status = 'V';
+			}
+		}
+}
 

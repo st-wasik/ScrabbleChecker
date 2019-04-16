@@ -1,0 +1,26 @@
+ButtonValid {
+    Texture         = "Beige.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureHover    = "Beige.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureDown     = "Beige.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureFocused  = "Beige.png" Part(135, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextColor       = rgb(0, 0, 0);
+    TextColorHover  = rgb(250, 250, 250);
+}
+
+ButtonInvalid {
+    Texture         = "Red.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureHover    = "Red.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureDown     = "Red.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureFocused  = "Red.png" Part(135, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextColor       = rgb(255, 255, 255);
+    TextColorHover  = rgb(250, 250, 250);
+}
+
+ButtonPartOfIn {
+    Texture         = "Orange.png" Part( 0, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureHover    = "Orange.png" Part(45, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureDown     = "Orange.png" Part(90, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextureFocused  = "Orange.png" Part(135, 64, 45, 50) Middle(10, 0, 25, 50);
+    TextColor       = rgb(0, 0, 0);
+    TextColorHover  = rgb(250, 250, 250);
+}

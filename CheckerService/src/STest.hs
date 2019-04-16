@@ -95,15 +95,15 @@ testList5 = "               " ++
             "               " 
 
 testList6 = "     a         " ++
-            "               " ++
-            "     b    k    " ++
+            "     b         " ++
+            "     a    k    " ++
             "          a    " ++
             "          r    " ++
             "    schemat    " ++
             "          o    " ++
             "       o  t    " ++
             "       k  e    " ++
-            "      kotek    " ++
+            "      koteki   " ++
             "        a a    " ++
             "        m      " ++
             "        auto   " ++

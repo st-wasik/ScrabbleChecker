@@ -28,3 +28,52 @@ testList =  "ewa ma kota    " ++
             " r    o        " ++
             "   r           " ++
             "     t         "
+
+--           0123456789ABCDE
+testList2 = "  p       z    " ++
+            "  o   diabel   " ++
+            "  t            " ++
+            "  r     u      " ++
+            " szpiczastymi  " ++
+            "  e     z      " ++
+            "  b przyjaciel " ++
+            "  i     m    e " ++ 
+            "  e  w  i    d " ++
+            "             w " ++
+            "   juz       o " ++
+            "               " ++
+            "   nogi  p     " ++
+            "        za     " ++
+            "         s     " 
+
+testList3 = "               " ++
+            "ze             " ++
+            "p uszami       " ++
+            "i              " ++
+            "c    ledwo     " ++
+            "z              " ++
+            "               " ++
+            "s              " ++
+            "t w potrzebie  " ++
+            "y              " ++
+            "m           p  " ++
+            "i juz nogi za  " ++
+            "            s  " ++
+            "               " ++
+            "               " 
+
+testList4 = "               " ++
+            "               " ++
+            "               " ++
+            "     d         " ++
+            "     o         " ++
+            "     m         " ++
+            "               " ++
+            "       o       " ++
+            "       k       " ++
+            "      kot      " ++
+            "        a      " ++
+            "        m      " ++
+            "        auto   " ++
+            "               " ++
+            "               " 

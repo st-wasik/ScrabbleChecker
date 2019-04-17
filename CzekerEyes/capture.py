@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import os
 import time
 
+GOOD_MATCH_RATIO = 0.1
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(0)
@@ -127,14 +128,73 @@ def template_match(imgTmp, imgFin):
         plt.close()
 
 
+def board_detection_ORB(testImg):
+    refImg = cv2.imread('test_img/reference2.jpg', 0)
+    cv2.imshow('reference', refImg)
+
+    orb = cv2.ORB_create(500)
+    testImg = cv2.resize(testImg, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_AREA)
+    refImg = cv2.resize(refImg, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_AREA)
+
+    kp = orb.detect(refImg, None)
+    kp1, des1 = orb.detectAndCompute(refImg, None)
+    kp2, des2 = orb.detectAndCompute(testImg, None)
+
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+    matches = bf.match(des1, des2)
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    for m in matches:
+        print(m.distance)
+
+    plt.figure(dpi=500)
+    result = np.zeros((1000, 1000, 3), np.uint8)
+    result = cv2.drawMatches(refImg, kp1, testImg, kp2, matches[:int(len(matches) * 0.5)], result)
+
+    plt.imshow(result), plt.show()
+
+def board_detection_BRISK(testImg):
+
+    # Load and resize images
+    refImg = cv2.imread('test_img/reference2.jpg', 0)
+    testImg = cv2.resize(testImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
+    refImg = cv2.resize(refImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
+
+    # Create BRISK, detect keypoints and descriptions
+    brisk = cv2.BRISK_create(40)
+    kp1, des1 = brisk.detectAndCompute(refImg, None)
+    kp2, des2 = brisk.detectAndCompute(testImg, None)
+
+    # Create BFMatcher and knnMatch descriptions
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(des1, des2, k=2)
+
+    # Filter for only close enough matches
+    good = []
+    for m, n in matches:
+        if m.distance < 0.65 * n.distance:
+            good.append([m])
+
+    # Plot results
+    plt.figure(dpi=450)
+    result = np.zeros((1000,1000,3), np.uint8)
+    result = cv2.drawMatchesKnn(refImg, kp1, testImg, kp2, good, result)
+    plt.imshow(result), plt.show()
+
+
 def main():
     # show_webcam(mirror=True)
-    files = []
-    for file in os.listdir('test_img/alfabet_close'):
-        files.append('test_img/alfabet_close/' + file)
+    # files = []
+    # for file in os.listdir('test_img/alfabet_close'):
+    #     files.append('test_img/alfabet_close/' + file)
+    #
+    # for file in files:
+    #     template_match('test_img/alfabet_close.jpg', file)
 
-    for file in files:
-        template_match('test_img/alfabet_close.jpg', file)
+    testImg = cv2.imread('test_img/one_place.jpg', 0)
+    board_detection_BRISK(testImg)
+    # board_detection_ORB(testImg)
 
 
 if __name__ == '__main__':

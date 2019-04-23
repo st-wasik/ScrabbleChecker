@@ -2,14 +2,16 @@ module SAlgorithm.SPoints(wordValue) where
 
 import SData.SChar
 
-wordValue :: SWord -> Int
-wordValue word = chars * wordExtra
+wordValue :: [(Int, Int)] -> SWord -> Int
+wordValue usedFields word  = chars * wordExtra
     where
-        chars = sum $ map (charValue) word
-        wordExtra = product $ map (charPosWordFactor) word
+        chars = sum $ map (charValue usedFields) word
+        wordExtra = product $ map (charPosWordFactor usedFields) word
 
-charValue :: SChar -> Int
-charValue char = charPoints char * charPosFactor char
+charValue :: [(Int, Int)] -> SChar -> Int
+charValue usedFields char = charVal * charPosFactor char
+    where
+        charVal = if (position char) `elem` usedFields then 0 else charPoints char 
 
 charPoints :: SChar -> Int
 charPoints char
@@ -33,8 +35,9 @@ charPosFactor char
     | (position char) `elem` [(6,6),(6,10),(10,6),(10,10)] = 3
     | otherwise = 1
 
-charPosWordFactor :: SChar -> Int
-charPosWordFactor char 
+charPosWordFactor :: [(Int, Int)] -> SChar -> Int
+charPosWordFactor usedFields char 
+    | (position char) `elem` usedFields = 1
     | (position char) `elem` [(2,2),(3,3),(4,4),(5,5)] = 2
     | (position char) `elem` [(11,11),(12,12),(13,13),(14,14)] = 2
     | (position char) `elem` [(14,2),(13,3),(12,4),(11,5)] = 2

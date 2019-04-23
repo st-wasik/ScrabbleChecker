@@ -15,21 +15,22 @@ import SAlgorithm.SPoints
 --   3. Place SChars on SBoard
 --   4. Update SBoard with info about not connected words
 --   5. Count points if all words are valid
-processScrabbleBoard :: Matrix SChar -> S.Set String -> (Matrix SChar, [(String, Int)])
-processScrabbleBoard board dictionary = (withNotConnectedMx, points)
+processScrabbleBoard :: Matrix SChar -> S.Set String -> [(Int, Int)]-> (Matrix SChar, [(String, Int)], [(Int, Int)])
+processScrabbleBoard board dictionary usedFields = (withNotConnectedMx, points, nub $ usedFields ++ newUsedFields)
     where
-        points = calculatePoints withNotConnectedMx validWords
+        newUsedFields = if length points > 0 then map position $ concat validWords else []
+        points = calculatePoints withNotConnectedMx validWords usedFields
         withNotConnectedMx = updateNotConnectedWords allMx
         allMx = placeSChars validMx $ concat invalidWords
         validMx = placeSChars singlesMx $ concat validWords 
         singlesMx = placeSChars SB.empty $ concat singleLetters
         (validWords, invalidWords, singleLetters) = updateSValid $ validatedWords board dictionary 
 
-calculatePoints :: Matrix SChar -> [SWord] -> [(String, Int)]
-calculatePoints wordsMx words = if invalidLettersCount > 0 then [] else countedPoints
+calculatePoints :: Matrix SChar -> [SWord] -> [(Int, Int)] -> [(String, Int)]
+calculatePoints wordsMx words usedFields = if invalidLettersCount > 0 then [] else countedPoints
     where 
         invalidLettersCount = foldr (\c acc -> if isInvalid c then acc+1 else acc) 0 $ Mx.toList wordsMx
-        countedPoints = zip (map (map letter) words) (map wordValue words)
+        countedPoints = zip (map (map letter) words) (map (wordValue usedFields) words)
         isInvalid c
             | valid c == SingleLetter = True
             | valid c == NotConnected = True

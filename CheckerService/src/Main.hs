@@ -13,36 +13,36 @@ import Data.Char
 main :: IO ()
 main = do 
     dict <- initializeDictionary
-    beginNextCheck dict
+    beginNextCheck dict []
 
-beginNextCheck :: Set [Char] -> IO ()
-beginNextCheck dictionary = do
+beginNextCheck :: Set [Char] -> [(Int, Int)] -> IO ()
+beginNextCheck dictionary usedFields = do
     input <- getLine
     case input of
         "exit" -> return ()
-        "t1" -> processWords dictionary ex1
-        "t2" -> processWords dictionary ex2
-        "t3" -> processWords dictionary ex3
-        "t4" -> processWords dictionary ex4
-        "t5" -> processWords dictionary ex5
-        "t6" -> processWords dictionary ex6
-        "t7" -> processWords dictionary ex7
-        "t8" -> processWords dictionary ex8
-        "t9" -> processWords dictionary ex9
-        "t10" -> processWords dictionary ex10
-        "t11" -> processWords dictionary ex11
-        "t12" -> processWords dictionary ex12
-        otherwise -> processWords dictionary input
+        "t1" -> processWords dictionary usedFields ex1 
+        "t2" -> processWords dictionary usedFields ex2
+        "t3" -> processWords dictionary usedFields ex3
+        "t4" -> processWords dictionary usedFields ex4
+        "t5" -> processWords dictionary usedFields ex5
+        "t6" -> processWords dictionary usedFields ex6
+        "t7" -> processWords dictionary usedFields ex7
+        "t8" -> processWords dictionary usedFields ex8
+        "t9" -> processWords dictionary usedFields ex9
+        "t10" -> processWords dictionary usedFields ex10
+        "t11" -> processWords dictionary usedFields ex11
+        "t12" -> processWords dictionary usedFields ex12
+        otherwise -> processWords dictionary usedFields input
 
-processWords :: Set [Char] -> String -> IO ()
-processWords dictionary words = do
+processWords :: Set [Char] -> [(Int, Int)] -> String -> IO ()
+processWords dictionary usedFields words  = do
     let scrabbleBoard = SB.fromList $ List.map toLower words 
-    let (processedMatrix, points) = processScrabbleBoard scrabbleBoard dictionary
+    let (processedMatrix, points, newUsedFields) = processScrabbleBoard scrabbleBoard dictionary usedFields
     -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-    -- putStrLn . show $ processedMatrix
-    putStrLn $ formatOutputMatrix processedMatrix
-    --putStrLn . show $ points
-    beginNextCheck dictionary
+    putStrLn . show $ processedMatrix
+    -- putStrLn $ formatOutputMatrix processedMatrix
+    putStrLn . show $ List.filter (\(_,a)-> a > 0) points
+    beginNextCheck dictionary newUsedFields
 
 -- | Intersects existing rows with empty rows to improve readbility in terminal
 intersectMx [] = []

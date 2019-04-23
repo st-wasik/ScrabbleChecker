@@ -20,12 +20,18 @@ beginNextCheck dictionary = do
     input <- getLine
     case input of
         "exit" -> return ()
-        "t1" -> processWords dictionary testList
-        "t2" -> processWords dictionary testList2
-        "t3" -> processWords dictionary testList3
-        "t4" -> processWords dictionary testList4
-        "t5" -> processWords dictionary testList5
-        "t6" -> processWords dictionary testList6
+        "t1" -> processWords dictionary ex1
+        "t2" -> processWords dictionary ex2
+        "t3" -> processWords dictionary ex3
+        "t4" -> processWords dictionary ex4
+        "t5" -> processWords dictionary ex5
+        "t6" -> processWords dictionary ex6
+        "t7" -> processWords dictionary ex7
+        "t8" -> processWords dictionary ex8
+        "t9" -> processWords dictionary ex9
+        "t10" -> processWords dictionary ex10
+        "t11" -> processWords dictionary ex11
+        "t12" -> processWords dictionary ex12
         otherwise -> processWords dictionary input
 
 processWords :: Set [Char] -> String -> IO ()
@@ -33,9 +39,9 @@ processWords dictionary words = do
     let scrabbleBoard = SB.fromList $ List.map toLower words 
     let (processedMatrix, points) = processScrabbleBoard scrabbleBoard dictionary
     -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-    putStrLn . show $ processedMatrix
-    --putStrLn $ formatOutputMatrix processedMatrix
-    putStrLn . show $ points
+    -- putStrLn . show $ processedMatrix
+    putStrLn $ formatOutputMatrix processedMatrix
+    --putStrLn . show $ points
     beginNextCheck dictionary
 
 -- | Intersects existing rows with empty rows to improve readbility in terminal

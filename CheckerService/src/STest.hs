@@ -6,11 +6,204 @@ import SData.SBoard as SB
 
 import Data.Matrix as Mx
 
-alaMaKota = "ala ma kota kot ma ale 123 234 345 445  1234567890-=="
-
 asLettersMx x = Mx.fromLists $ (map $ map letter) $ Mx.toLists x
 
-x = SB.fromList $ alaMaKota ++ repeat ' '
+ex1 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "       s       " ++
+      "       i       " ++
+      "       e       " ++
+      "       m       " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               "
+
+ex2 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "       s       " ++
+      "       i       " ++
+      "    apteka     " ++
+      "       m       " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               "
+
+ex3 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    a          " ++
+      "    j          " ++
+      "               " ++
+      "               "
+
+ex4 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    a          " ++
+      "  maj          " ++
+      "               " ++
+      "               "
+
+ex5 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akord      " ++
+      "  maj          " ++
+      "               " ++
+      "               "
+
+ex6 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akord      " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+
+ex7 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+
+
+ex8 = "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "               " ++
+      "       o j     " ++
+      "    t  s a     " ++
+      "    r  i v     " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+
+
+ex9 = "               " ++
+      "               " ++
+      "  a b c d e    " ++
+      "               " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+      
+ex10 ="               " ++
+      "   k           " ++
+      "   o    qwerty " ++
+      "   t           " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+
+ex11 ="               " ++
+      "   k           " ++
+      "   o           " ++
+      "   t           " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+      
+ex12 ="               " ++
+      "   k           " ++
+      "   oko         " ++
+      "   t           " ++
+      "               " ++
+      "       o       " ++
+      "    t  s       " ++
+      "    r  i       " ++
+      "    apteka     " ++
+      "    m  m       " ++
+      "    w          " ++
+      "    akordeon   " ++
+      "  maj   o      " ++
+      "        m      " ++
+      "               "
+
+
+
 
 --           0123456789ABCDE
 testList =  "ewa ma kota    " ++

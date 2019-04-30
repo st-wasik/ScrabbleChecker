@@ -9,6 +9,7 @@ import SData.SChar as SC
 import SData.SBoard as SB
 import STest
 import Data.Char
+import System.IO
 
 main :: IO ()
 main = do 
@@ -38,10 +39,10 @@ processWords :: Set [Char] -> [(Int, Int)] -> String -> IO ()
 processWords dictionary usedFields words  = do
     let scrabbleBoard = SB.fromList $ List.map toLower words 
     let (processedMatrix, points, newUsedFields) = processScrabbleBoard scrabbleBoard dictionary usedFields
-    -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-    putStrLn . show $ processedMatrix
-    -- putStrLn $ formatOutputMatrix processedMatrix
-    putStrLn . show $ List.filter (\(_,a)-> a > 0) points
+    --printOut . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
+    printOut processedMatrix
+    --printOut $ formatOutputMatrix processedMatrix
+    printOut $ List.filter (\(_,a)-> a > 0) points
     beginNextCheck dictionary newUsedFields
 
 -- | Intersects existing rows with empty rows to improve readbility in terminal
@@ -68,3 +69,9 @@ filterDictionaryWords words = List.filter (\a -> len a && chars a) words
         len word = length word > 1
         chars [c1,c2] = if c1 == c2 then False else True
         chars _ = True 
+
+-- | Prints immediately argument to stdout
+printOut :: Show a => a -> IO ()
+printOut obj = do
+    putStrLn . show $ obj
+    hFlush stdout

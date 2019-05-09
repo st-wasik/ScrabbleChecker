@@ -8,33 +8,50 @@ import SAlgorithm.SValidator as SV
 import SData.SChar as SC
 import SData.SBoard as SB
 import STest
+import Data.Char
+import System.IO
 
 main :: IO ()
 main = do 
     dict <- initializeDictionary
-    beginWordsCheck dict
+    beginNextCheck dict []
 
-beginWordsCheck :: Set [Char] -> IO ()
-beginWordsCheck dictionary = do
+beginNextCheck :: Set [Char] -> [(Int, Int)] -> IO ()
+beginNextCheck dictionary usedFields = do
     input <- getLine
     case input of
         "exit" -> return ()
-        _ -> do
-            let scrabbleBoard = SB.fromList testList4 
-            let processedMatrix = processScrabbleBoard scrabbleBoard dictionary
-            -- putStrLn . show . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-            putStrLn . show $ processedMatrix
-            putStrLn $ formatOutput processedMatrix
-            -- count points
-            beginWordsCheck dictionary
+        "t1" -> processWords dictionary usedFields ex1 
+        "t2" -> processWords dictionary usedFields ex2
+        "t3" -> processWords dictionary usedFields ex3
+        "t4" -> processWords dictionary usedFields ex4
+        "t5" -> processWords dictionary usedFields ex5
+        "t6" -> processWords dictionary usedFields ex6
+        "t7" -> processWords dictionary usedFields ex7
+        "t8" -> processWords dictionary usedFields ex8
+        "t9" -> processWords dictionary usedFields ex9
+        "t10" -> processWords dictionary usedFields ex10
+        "t11" -> processWords dictionary usedFields ex11
+        "t12" -> processWords dictionary usedFields ex12
+        otherwise -> processWords dictionary usedFields input
 
--- | Intersects matrix's rows with empty rows to improve readbility in terminal
+processWords :: Set [Char] -> [(Int, Int)] -> String -> IO ()
+processWords dictionary usedFields words  = do
+    let scrabbleBoard = SB.fromList $ List.map toLower words 
+    let (processedMatrix, points, newUsedFields) = processScrabbleBoard scrabbleBoard dictionary usedFields
+    --printOut . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
+    printOut processedMatrix
+    --printOut $ formatOutputMatrix processedMatrix
+    printOut $ List.filter (\(_,a)-> a > 0) points
+    beginNextCheck dictionary newUsedFields
+
+-- | Intersects existing rows with empty rows to improve readbility in terminal
 intersectMx [] = []
 intersectMx (x:xs) = x:(List.take 15 $ repeat $ SC.empty (0,0)): intersectMx xs
 
 -- | Converts processed matrix to string and formats it before sending to display manager
-formatOutput :: Matrix SChar -> String
-formatOutput matrix = show filtered
+formatOutputMatrix :: Matrix SChar -> String
+formatOutputMatrix matrix = show filtered
     where
         filtered = List.map (\sc@(SChar l v p) -> if v `elem` [SingleLetter, ConnectionPoint] then SChar l Valid p else sc) allLetters
         allLetters = Mx.toList matrix
@@ -52,3 +69,9 @@ filterDictionaryWords words = List.filter (\a -> len a && chars a) words
         len word = length word > 1
         chars [c1,c2] = if c1 == c2 then False else True
         chars _ = True 
+
+-- | Prints immediately argument to stdout
+printOut :: Show a => a -> IO ()
+printOut obj = do
+    putStrLn . show $ obj
+    hFlush stdout

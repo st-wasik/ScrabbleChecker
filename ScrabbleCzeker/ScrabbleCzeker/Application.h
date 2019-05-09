@@ -13,8 +13,7 @@ private:
 
 	struct letter
 	{
-		const wchar_t * chr = nullptr;
-		std::shared_ptr<tgui::Button> tile = nullptr;
+		std::shared_ptr<tgui::Button> tile;
 		char status = 'B';
 	};
 
@@ -27,7 +26,7 @@ private:
 
 	tgui::Font font;
 
-	void addTile(const wchar_t *letter, int x, int y, char status);
+	void addTile(wchar_t letter, int x, int y, char status);
 
 	std::vector<sf::RectangleShape> buildBoard();
 

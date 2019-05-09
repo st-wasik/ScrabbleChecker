@@ -7,19 +7,35 @@ import Data.List as L
 import qualified Data.Set as S
 import SData.SBoard as SB
 import Debug.Trace as Dg
+import SAlgorithm.SPoints
 
 -- | Processes SBoard
---   1. Validates words with dictionary
---   2. Marks SChars with proper info about validness
---   3. Places SChars on SBoard
---   4. Updates SBoard with info about not connected words
-processScrabbleBoard :: Matrix SChar -> S.Set String -> Matrix SChar
-processScrabbleBoard board dictionary = withNotConnectedMx
+--   1. Validates word with dictionary
+--   2. Mark SChars with proper info about validness
+--   3. Place SChars on SBoard
+--   4. Update SBoard with info about not connected words
+--   5. Count points if all words are valid
+processScrabbleBoard :: Matrix SChar -> S.Set String -> [(Int, Int)]-> (Matrix SChar, [(String, Int)], [(Int, Int)])
+processScrabbleBoard board dictionary usedFields = (withNotConnectedMx, points, nub $ usedFields ++ newUsedFields)
     where
+        newUsedFields = if length points > 0 then map position $ concat validWords else []
+        points = calculatePoints withNotConnectedMx validWords usedFields
         withNotConnectedMx = updateNotConnectedWords allMx
-        allMx = placeSChars singlesMx $ concat  (validWords ++ invalidWords)
+        allMx = placeSChars validMx $ concat invalidWords
+        validMx = placeSChars singlesMx $ concat validWords 
         singlesMx = placeSChars SB.empty $ concat singleLetters
         (validWords, invalidWords, singleLetters) = updateSValid $ validatedWords board dictionary 
+
+calculatePoints :: Matrix SChar -> [SWord] -> [(Int, Int)] -> [(String, Int)]
+calculatePoints wordsMx words usedFields = if invalidLettersCount > 0 then [] else countedPoints
+    where 
+        invalidLettersCount = foldr (\c acc -> if isInvalid c then acc+1 else acc) 0 $ Mx.toList wordsMx
+        countedPoints = zip (map (map letter) words) (map (wordValue usedFields) words)
+        isInvalid c
+            | valid c == SingleLetter = True
+            | valid c == NotConnected = True
+            | valid c == Invalid = True
+            | otherwise = False
 
 -- | Takes triple of validated words lists.
 --   Updates SChars with info about validness.
@@ -38,4 +54,5 @@ validatedWords mx dict = (newValid, newInvalid, single)
         newValid = valid
         (newInvalid, single) = L.partition (\a -> L.length a > 1) invalid
         (valid, invalid) = L.partition (\a -> S.member (word a) dict) $ allWords mx
+
 

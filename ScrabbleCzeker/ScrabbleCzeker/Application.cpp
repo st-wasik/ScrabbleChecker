@@ -19,43 +19,23 @@ void Application::run()
 
 	shapes = buildBoard();
 
-	//addTile(L"K", 7, 3, 'I');
-	//addTile(L"O", 7, 4, 'P');
-	//addTile(L"L", 7, 5);
-	//addTile(L"Ê", 7, 6);
-	//addTile(L"D", 7, 7);
-	//addTile(L"A", 7, 8);
-	//addTile(L"O", 8, 3);
-	//addTile(L"T", 9, 3);
-	//addTile(L"J", 5, 7);
-	//addTile(L"E", 6, 7);
-	//addTile(L"N", 8, 7);
-	//addTile(L"A", 9, 7);
-	//addTile(L"K", 10, 7);
-	//addTile(L"¯", 11, 7);
-	//addTile(L"E", 12, 7);
-	//addTile(L"A", 1, 5);
-	//addTile(L"L", 2, 5);
-	//addTile(L"K", 3, 5);
-	//addTile(L"O", 4, 5);
-	//addTile(L"H", 5, 5);
-	//addTile(L"O", 6, 5);
-	//addTile(L"I", 2, 6);
-	//addTile(L"Z", 2, 7);
-	//addTile(L"A", 2, 8);
-	//addTile(L"K", 2, 9);
-	//addTile(L"J", 4, 2);
-	//addTile(L"A", 4, 3);
-	//addTile(L"J", 4, 4);
-	//addTile(L"W", 12, 8);
-	//addTile(L"A", 12, 9);
-	//addTile(L"G", 8, 9);
-	//addTile(L"R", 9, 9);
-	//addTile(L"U", 10, 9);
-	//addTile(L"B", 11, 9);
-	//addTile(L"B", 10, 10);
-	//addTile(L"A", 10, 11);
-	//addTile(L"W", 10, 12);
+	addTile(L'K', 7, 3, 'V');
+	addTile(L'R', 7, 4, 'V');
+	addTile(L'O', 7, 5, 'V');
+	addTile(L'W', 7, 6, 'V');
+	addTile(L'A', 7, 7, 'P');
+	addTile(L'J', 6, 7, 'I');
+	addTile(L'V', 8, 7, 'I');
+	addTile(L'A', 9, 7, 'I');
+	addTile(L'P', 3, 4, 'V');
+	addTile(L'O', 4, 4, 'V');
+	addTile(L'P', 5, 4, 'V');
+	addTile(L'A', 6, 4, 'V');
+	addTile(L'C', 8, 4, 'V');
+	addTile(L'I', 9, 4, 'V');
+	addTile(L'E', 10, 4, 'V');
+	addTile(L'P', 3, 5, 'V');
+	addTile(L'C', 3, 3, 'V');
 
 	while (window.isOpen())
 	{
@@ -171,7 +151,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	return toBuild;
 }
 
-void Application::addTile(const wchar_t *l, int x, int y, char status)
+void Application::addTile(wchar_t l, int x, int y, char status)
 {
 	//field size is 60x60
 	//tile size is 54x54
@@ -192,7 +172,6 @@ void Application::addTile(const wchar_t *l, int x, int y, char status)
 	board.add(tile);
 
 	letter var;
-	var.chr = l;
 	var.status = status;
 	var.tile = tile;
 	tiles[x][y] = var;
@@ -200,14 +179,18 @@ void Application::addTile(const wchar_t *l, int x, int y, char status)
 
 void Application::clearInvalid()
 {
+	//Statuses:
+	//V-Valid
+	//I-Invalid
+	//P-PartOfInvalid
+	//B-Blank
 	for (int i = 0; i < 15; i++)
 		for (int j = 0; j < 15; j++)
 		{
 			if (tiles[i][j].status == 'I')
 			{
 				board.remove(tiles[i][j].tile);
-				tiles[i][j].chr = nullptr;
-				tiles[i][j].tile = nullptr;
+				tiles[i][j].tile.reset();
 				tiles[i][j].status = 'B';
 			}
 			if (tiles[i][j].status == 'P')

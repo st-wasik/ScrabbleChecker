@@ -367,5 +367,6 @@ Debug
 .vs
 
 CzekerEyes/\.idea/
+\.idea/
 
 CheckerService/CheckerService

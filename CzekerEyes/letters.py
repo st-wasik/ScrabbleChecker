@@ -3,7 +3,50 @@ import numpy as np
 from matplotlib import pyplot as plt
 from capture import plot_test_images
 from capture import show_webcam
+
+from PIL import Image
+import pytesseract
+import cv2
 import os
+
+def tesseract_recognition(thresh=False, blur=False):
+    for i in range(0,8):
+        # load the example image and convert it to grayscale
+        image = cv2.imread("test_img/alfabet_close/0"+("0"+str(i)if i<10 else str(i))+".png")
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # check to see if we should apply thresholding to preprocess the
+        # image
+        if thresh:
+            gray = cv2.threshold(gray, 0, 255,
+                                 cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
+        # make a check to see if median blurring should be done to remove
+        # noise
+
+        if blur:
+            gray = cv2.medianBlur(gray, 3)
+
+        # write the grayscale image to disk as a temporary file so we can
+        # apply OCR to it
+        filename = "{}.png".format(os.getpid())
+        cv2.imwrite(filename, gray)
+
+        # load the image as a PIL/Pillow image, apply OCR, and then delete
+        # the temporary file
+        pytesseract.pytesseract.tesseract_cmd = r'D:\Programy\Tesseract-OCR\tesseract.exe'
+        text = pytesseract.image_to_string(Image.open(filename), lang="pol", config="--psm 10 -c tessedit_char_whitelist=AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpRrSsŚśTtUuWwYyZzŹźŻż")
+        os.remove(filename)
+        print("lol")
+        print(text)
+
+        # show the output images
+        cv2.imshow("Image", image)
+        cv2.imshow("Output", gray)
+        cv2.waitKey(0)
+
+
+
 
 index = 0
 
@@ -88,14 +131,30 @@ def template_match(imgTmp, imgFin):
         plt.close()
 
 
-def main():
-    show_webcam(mirror=True)
-    files = []
-    for file in os.listdir('test_img/alfabet_close'):
-        files.append('test_img/alfabet_close/' + file)
+def contures():
+    img = cv2.imread('test_img/alfabet.jpg', 0)
 
-    for file in files:
-        template_match('test_img/alfabet_close.jpg', file)
+    ret, thresh = cv2.threshold(img, 127, 255, 0)
+
+    contours, hierarchy = cv2.findContours(thresh, 1, 2)
+
+    cv2.drawContours(img, contours, -1, (255, 255, 255), 10)
+
+    plt.imshow(img)
+    plt.show()
+
+    cnt = contours[0]
+
+    M = cv2.moments(cnt)
+def main():
+    #show_webcam(mirror=True)
+    # files = []
+    # for file in os.listdir('test_img/alfabet_close'):
+    #     files.append('test_img/alfabet_close/' + file)
+    #
+    # for file in files:
+    #     template_match('test_img/alfabet_close.jpg', file)
+    tesseract_recognition(True, True)
 
 
 if __name__ == '__main__':

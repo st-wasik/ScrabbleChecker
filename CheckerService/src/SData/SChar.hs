@@ -22,7 +22,7 @@ shortShow = True
 instance Show SValid where 
      show Valid   = "v"
      show Invalid = "i"
-     show NotSet  = "_"
+     show NotSet  = " "
      show PartOfInvalid = "p" 
      show SingleLetter = "s"
      show ConnectionPoint = "c"
@@ -36,7 +36,7 @@ data SChar = SChar {
                    } 
 
 instance Show SChar where
-     show s = concat [" ", filter (/='\'') . show . C.toUpper $ letter s, " ", show $ valid s, ""]
+     show s = concat ["", filter (/='\'') . show . C.toUpper $ letter s, "", show $ valid s, ""]
      --show s = concat ["",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
      --show s = concat [show $ letter s, show $ position s]
 

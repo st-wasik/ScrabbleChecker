@@ -10,7 +10,7 @@ void read_words()
 	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
 	std::regex numberR("\\d+");
 
-	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+, \\d+\\)");
+	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
 
 	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
 

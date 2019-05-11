@@ -1,5 +1,35 @@
 #include "Application.h"
+#include <iostream>
+#include <regex>
 
+void read_words()
+{
+	std::string result;
+	std::getline(std::cin, result);
+
+	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
+	std::regex numberR("\\d+");
+
+	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+, \\d+\\)");
+
+	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
+
+	for (auto it = words_begin; it != std::sregex_iterator(); it++)
+	{
+		auto res_str = it->str();
+		auto word = std::sregex_iterator(res_str.begin(), res_str.end(), wordR);
+		auto number = std::sregex_iterator(res_str.begin(), res_str.end(), numberR);
+
+		if (word != std::sregex_iterator() && number != std::sregex_iterator())
+		{
+			// std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
+
+			// add to list
+			// list_words.push_back(word->str());
+			// list_points.push_back(std::stoi(number->str()));
+		}
+	}
+}
 
 Application::Application() 
 	: window{ sf::VideoMode(980, 980), "Scrable Czeker", sf::Style::Close },  board {window},

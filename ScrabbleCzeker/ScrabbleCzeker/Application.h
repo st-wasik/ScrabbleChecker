@@ -30,6 +30,14 @@ private:
 
 	std::vector<sf::RectangleShape> buildBoard();
 
-	void clearInvalid();
+	void read_stream();
+
+	void read_words(std::string result);
+
+	void clear();
+
+	std::shared_ptr<tgui::ListBox> createList();
+
+	std::shared_ptr<tgui::ListBox> wordList;
 };
 

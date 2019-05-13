@@ -2,93 +2,6 @@
 #include <iostream>
 #include <regex>
 
-void read_words()
-{
-	std::string result;
-	std::getline(std::cin, result);
-
-	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
-	std::regex numberR("\\d+");
-
-	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
-
-	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
-
-	for (auto it = words_begin; it != std::sregex_iterator(); it++)
-	{
-		auto res_str = it->str();
-		auto word = std::sregex_iterator(res_str.begin(), res_str.end(), wordR);
-		auto number = std::sregex_iterator(res_str.begin(), res_str.end(), numberR);
-
-		if (word != std::sregex_iterator() && number != std::sregex_iterator())
-		{
-			// std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
-
-			// add to list
-			// list_words.push_back(word->str());
-			// list_points.push_back(std::stoi(number->str()));
-		}
-	}
-}
-
-Application::Application() 
-	: window{ sf::VideoMode(980, 980), "Scrable Czeker", sf::Style::Close },  board {window},
-		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/CheckerThemas.txt" }
-{
-	font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
-}
-
-
-Application::~Application()
-{
-}
-
-void Application::run()
-{
-	srand(static_cast<unsigned int>(time(NULL)));
-
-	shapes = buildBoard();
-
-	addTile(L'K', 7, 3, 'V');
-	addTile(L'R', 7, 4, 'V');
-	addTile(L'O', 7, 5, 'V');
-	addTile(L'W', 7, 6, 'V');
-	addTile(L'A', 7, 7, 'P');
-	addTile(L'J', 6, 7, 'I');
-	addTile(L'V', 8, 7, 'I');
-	addTile(L'A', 9, 7, 'I');
-	addTile(L'P', 3, 4, 'V');
-	addTile(L'O', 4, 4, 'V');
-	addTile(L'P', 5, 4, 'V');
-	addTile(L'A', 6, 4, 'V');
-	addTile(L'C', 8, 4, 'V');
-	addTile(L'I', 9, 4, 'V');
-	addTile(L'E', 10, 4, 'V');
-	addTile(L'P', 3, 5, 'V');
-	addTile(L'C', 3, 3, 'V');
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-			//if (event.type == sf::Event::LostFocus)
-				//window.close();
-
-			board.handleEvent(event);
-		}
-		window.clear();
-		for (int i = 0; i < shapes.size(); i++)
-		{
-			window.draw(shapes[i]);
-		}
-		board.draw();
-		window.display();
-	}
-}
-
 std::vector<sf::RectangleShape> Application::buildBoard()
 {
 	std::vector<sf::RectangleShape> toBuild;
@@ -127,7 +40,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 		{2,0,0,3,0,0,0,2,0,0,0,3,0,0,2}
 	};
 	sf::RectangleShape background(sf::Vector2f(980, 980));
-	background.setFillColor(sf::Color(32,32,32,255));
+	background.setFillColor(sf::Color(32, 32, 32, 255));
 	toBuild.push_back(background);
 	for (int i = 0; i < boardVec.size(); i++)
 	{
@@ -137,26 +50,26 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 			field.setPosition((1.f + j) * 5 + j * 60, (1.f + i) * 5 + i * 60);
 			switch (boardVec[i][j])
 			{
-				case 0: 
-					field.setFillColor(sf::Color(13, 132, 105));
-					break;
-				case 1:	
-					field.setFillColor(sf::Color(246, 156, 156)); 
-					break;
-				case 2:	
-					field.setFillColor(sf::Color(224, 65, 86)); 
-					break;
-				case 3:	
-					field.setFillColor(sf::Color(144, 193, 211)); 
-					break;
-				case 4: 
-					field.setFillColor(sf::Color(29, 124, 194)); 
-					break;
-				case 5:	
-					field.setFillColor(sf::Color(223, 201, 202)); 
-					break;
-				default: 
-					break;
+			case 0:
+				field.setFillColor(sf::Color(13, 132, 105));
+				break;
+			case 1:
+				field.setFillColor(sf::Color(246, 156, 156));
+				break;
+			case 2:
+				field.setFillColor(sf::Color(224, 65, 86));
+				break;
+			case 3:
+				field.setFillColor(sf::Color(144, 193, 211));
+				break;
+			case 4:
+				field.setFillColor(sf::Color(29, 124, 194));
+				break;
+			case 5:
+				field.setFillColor(sf::Color(223, 201, 202));
+				break;
+			default:
+				break;
 			}
 
 
@@ -187,11 +100,11 @@ void Application::addTile(wchar_t l, int x, int y, char status)
 	//tile size is 54x54
 	//with this we can see field color (type) under tile
 	auto tile = tgui::Button::create();
-	if(status=='V')
+	if (status == 'v')
 		tile->setRenderer(theme.getRenderer("ButtonValid"));
-	if(status=='I')
+	if (status == 'i')
 		tile->setRenderer(theme.getRenderer("ButtonInvalid"));
-	if(status=='P')
+	if (status == 'p')
 		tile->setRenderer(theme.getRenderer("ButtonPartOfIn"));
 	tile->setPosition((1 + y) * 5 + y * 60 + 3, (1 + x) * 5 + x * 60 + 3);
 	tile->setText(l);
@@ -207,7 +120,7 @@ void Application::addTile(wchar_t l, int x, int y, char status)
 	tiles[x][y] = var;
 }
 
-void Application::clearInvalid()
+void Application::clear()
 {
 	//Statuses:
 	//V-Valid
@@ -217,17 +130,127 @@ void Application::clearInvalid()
 	for (int i = 0; i < 15; i++)
 		for (int j = 0; j < 15; j++)
 		{
-			if (tiles[i][j].status == 'I')
+			board.remove(tiles[i][j].tile);
+			tiles[i][j].tile.reset();
+			tiles[i][j].status = 'B';
+		}
+}
+
+void Application::read_words(std::string result)
+{
+	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
+	std::regex numberR("\\d+");
+
+	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
+
+	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
+
+	for (auto it = words_begin; it != std::sregex_iterator(); it++)
+	{
+		auto res_str = it->str();
+		auto word = std::sregex_iterator(res_str.begin(), res_str.end(), wordR);
+		auto number = std::sregex_iterator(res_str.begin(), res_str.end(), numberR);
+
+		if (word != std::sregex_iterator() && number != std::sregex_iterator())
+		{
+			std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
+
+			std::string item = word->str() + " " + number->str();
+			wordList->addItem(item);
+		}
+	}
+}
+
+void Application::read_stream()
+{
+	clear();
+	int counterx = 0, countery = 0;
+	std::string stream =
+		"[  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Kv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Ov,Kv,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Tv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Tv,  ,  ,Sv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Rv,  ,  ,Iv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Av,Pv,Tv,Ev,Kv,Av,  ,  ,  ,  ,  ,  ,  ,  ,  ,Mv,  ,  ,Mv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Wv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Av,Kv,Ov,Rv,Dv,Ev,Ov,Nv,  ,  ,  ,  ,  ,Mv,Av,Jv,  ,  ,  ,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Mv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ][(oko, 4), (kot, 10)]";
+	for (int i = 1; i < stream.size(); i++)
+	{
+		if (stream[i] == ']')
+			break;
+		else
+		{
+			if (stream[i] != ',')
 			{
-				board.remove(tiles[i][j].tile);
-				tiles[i][j].tile.reset();
-				tiles[i][j].status = 'B';
-			}
-			if (tiles[i][j].status == 'P')
-			{
-				tiles[i][j].tile->setRenderer(theme.getRenderer("ButtonValid"));
-				tiles[i][j].status = 'V';
+				if (stream[i] != ' ')
+				{
+					std::wint_t btowc(stream[i]);
+					addTile(btowc, counterx, countery, stream[i + 1]);
+				}
+				counterx++;
+				if (counterx > 14)
+				{
+					countery++;
+					counterx=0;
+				}
+				i++;
 			}
 		}
+	}
+	read_words(stream);
+}
+
+std::shared_ptr<tgui::ListBox> Application::createList()
+{
+	auto label = tgui::Label::create();
+	label->setRenderer(theme.getRenderer("ToolTip"));
+	label->setText("\t\tWords");
+	label->setPosition(980, 0);
+	label->setSize(300, 50);
+	label->setTextSize(32);
+	board.add(label);
+
+	std::shared_ptr<tgui::ListBox> listBox = tgui::ListBox::create();
+	listBox->setRenderer(theme.getRenderer("ListBox"));
+	listBox->setSize(300, 930);
+	listBox->setItemHeight(30);
+	listBox->setPosition(980, 50);
+	board.add(listBox);
+
+	return listBox;
+}
+
+Application::Application() 
+	: window{ sf::VideoMode(1280, 980), "Scrable Czeker", sf::Style::Close },  board {window},
+		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/CheckerThemas.txt" }
+{
+	font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
+}
+
+
+Application::~Application()
+{
+}
+
+void Application::run()
+{
+	srand(static_cast<unsigned int>(time(NULL)));
+
+	shapes = buildBoard();
+
+	wordList = createList();
+	read_stream();
+
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+
+			board.handleEvent(event);
+		}
+		window.clear();
+		for (int i = 0; i < shapes.size(); i++)
+		{
+			window.draw(shapes[i]);
+		}
+		board.draw();
+		window.display();
+	}
 }
 

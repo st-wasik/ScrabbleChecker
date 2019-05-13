@@ -142,12 +142,15 @@ void Application::clear()
 		}
 }
 
-void Application::read_words(std::string result)
+void Application::read_words()
 {
 	std::regex wordR("[a-z����󜟿]+");
 	std::regex numberR("\\d+");
 
 	std::regex pair("\\([a-z����󜟿]+,\\d+\\)");
+	std::string result;
+
+	std::cin >> result;
 
 	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
 
@@ -169,10 +172,16 @@ void Application::read_words(std::string result)
 
 void Application::read_stream()
 {
+	int countery = 0, counterx = 0;
+	std::string stream;
+	std::cin >> stream;
+	if (std::cin.fail() || stream.empty())
+	{
+		std::cin.clear();
+		return;
+	}
 	clear();
-	int counterx = 0, countery = 0;
-	std::string stream =
-		"[  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Kv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Ov,Kv,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Tv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Tv,  ,  ,Sv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Rv,  ,  ,Iv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Av,Pv,Tv,Ev,Kv,Av,  ,  ,  ,  ,  ,  ,  ,  ,  ,Mv,  ,  ,Mv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Wv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Av,Kv,Ov,Rv,Dv,Ev,Ov,Nv,  ,  ,  ,  ,  ,Mv,Av,Jv,  ,  ,  ,Ov,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,Mv,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ][(oko, 4), (kot, 10)]";
+
 	for (int i = 1; i < stream.size(); i++)
 	{
 		if (stream[i] == ']')
@@ -181,22 +190,22 @@ void Application::read_stream()
 		{
 			if (stream[i] != ',')
 			{
-				if (stream[i] != ' ')
+				if (stream[i] != '_')
 				{
 					std::wint_t btowc(stream[i]);
 					addTile(btowc, counterx, countery, stream[i + 1]);
 				}
-				counterx++;
-				if (counterx > 14)
+				countery++;
+				if (countery > 14)
 				{
-					countery++;
-					counterx=0;
+					counterx++;
+					countery = 0;
 				}
 				i++;
 			}
 		}
 	}
-	read_words(stream);
+	read_words();
 }
 
 std::shared_ptr<tgui::ListBox> Application::createList()

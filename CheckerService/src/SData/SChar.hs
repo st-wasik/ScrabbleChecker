@@ -3,6 +3,8 @@ module SData.SChar where
 import Data.Matrix as Mx
 import Data.Tuple
 import Data.Char as C
+import System.IO
+import Data.List as List
 
 -- Scrabble data type
 
@@ -36,10 +38,9 @@ data SChar = SChar {
                    } 
 
 instance Show SChar where
-     show s = concat ["", filter (/='\'') . show . C.toUpper $ letter s, "", show $ valid s, ""]
+     show s = concat ["", show . C.toUpper $ letter s , " ", show $ valid s, ""]
      --show s = concat ["",show $ letter s, " ", show $ valid s, " ", show $ position s, ""]
      --show s = concat [show $ letter s, show $ position s]
-
 
 type SWord = [SChar]
 
@@ -49,3 +50,26 @@ empty position = SChar ' ' NotSet position
 
 word :: SWord -> String
 word = map letter
+
+
+-- | Prints formated SChar list
+printSCharList list = do
+     let formattedList = List.map (\sc@(SChar l v p) -> if v == ConnectionPoint then SChar l Valid p else sc) list
+     let formattedList2 = List.map (\sc@(SChar l v p) -> if v == SingleLetter then SChar l Invalid p else sc) formattedList
+     putStr "["
+     printSCharList' formattedList2
+     putStrLn "]"
+     hFlush stdout
+
+printSCharList' [] = return ()
+
+printSCharList' [sc] = do
+     putStr $ (C.toUpper $ (letter sc)) : ""
+     putStr . show $ valid sc
+     return ()
+
+printSCharList' (sc:scs) = do
+     putStr $ (C.toUpper $ (letter sc)) : ""
+     putStr . show $ valid sc
+     putStr ","
+     printSCharList' scs

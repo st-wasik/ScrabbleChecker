@@ -41,7 +41,8 @@ processWords dictionary usedFields words  = do
     let (processedMatrix, points, newUsedFields) = processScrabbleBoard scrabbleBoard dictionary usedFields
     --printOut . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
     --printOut processedMatrix
-    printOut $ formatOutputMatrix processedMatrix
+    printSCharList $ Mx.toList processedMatrix
+    --printOut $ formatOutputMatrix processedMatrix
     printOut $ List.filter (\(_,a)-> a > 0) points
     beginNextCheck dictionary newUsedFields
 

@@ -6,11 +6,17 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 {
 	std::vector<sf::RectangleShape> toBuild;
 
+#ifdef RELEASE
+	t.loadFromFile("../../ScrabbleCzeker/textures/noise.png");
+	star.loadFromFile("../../ScrabbleCzeker/textures/star.png");
+#else
 	t.loadFromFile("../ScrabbleCzeker/textures/noise.png");
+	star.loadFromFile("../ScrabbleCzeker/textures/star.png");
+#endif
+
 	t.setRepeated(true);
 	t.setSmooth(true);
 
-	star.loadFromFile("../ScrabbleCzeker/textures/star.png");
 	star.setRepeated(true);
 	star.setSmooth(true);
 
@@ -138,10 +144,10 @@ void Application::clear()
 
 void Application::read_words(std::string result)
 {
-	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
+	std::regex wordR("[a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+");
 	std::regex numberR("\\d+");
 
-	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
+	std::regex pair("\\([a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+,\\d+\\)");
 
 	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
 
@@ -213,12 +219,23 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 	return listBox;
 }
 
-Application::Application() 
-	: window{ sf::VideoMode(1280, 980), "Scrable Czeker", sf::Style::Close },  board {window},
-		theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/CheckerThemas.txt" }
+#ifdef RELEASE
+Application::Application()
+	: window{ sf::VideoMode(1280, 980), "Scrable Czeker", sf::Style::Close }, board{ window },
+	theme{ "../../TGUI-0.8/themes/CheckerThemas.txt" },
+	close(false)
+{
+	font = tgui::Font("../../TGUI-0.8/fonts/Amble-Bold.ttf");
+}
+#else
+Application::Application()
+	: window{ sf::VideoMode(1280, 980), "Scrable Czeker", sf::Style::Close }, board{ window },
+	theme{ "../../ScrabbleCzeker/TGUI-0.8/themes/CheckerThemas.txt" },
+	close(false)
 {
 	font = tgui::Font("../../ScrabbleCzeker/TGUI-0.8/fonts/Amble-Bold.ttf");
 }
+#endif
 
 
 Application::~Application()

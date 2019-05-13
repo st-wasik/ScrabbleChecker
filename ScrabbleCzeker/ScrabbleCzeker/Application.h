@@ -2,12 +2,15 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <array>
+#include <mutex>
+#include <atomic>
 class Application
 {
 public:
 	Application();
 	~Application();
 	void run();
+	void read_stream();
 private:
 	sf::RenderWindow window;
 
@@ -30,14 +33,16 @@ private:
 
 	std::vector<sf::RectangleShape> buildBoard();
 
-	void read_stream();
-
-	void read_words(std::string result);
+	void read_words();
 
 	void clear();
 
 	std::shared_ptr<tgui::ListBox> createList();
 
 	std::shared_ptr<tgui::ListBox> wordList;
+
+	std::mutex mutex;
+
+	std::atomic_bool close;
 };
 

@@ -1,6 +1,8 @@
 #include "Application.h"
 #include <iostream>
 #include <regex>
+#include <thread>
+#include <mutex>
 
 std::vector<sf::RectangleShape> Application::buildBoard()
 {
@@ -48,6 +50,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	sf::RectangleShape background(sf::Vector2f(980, 980));
 	background.setFillColor(sf::Color(32, 32, 32, 255));
 	toBuild.push_back(background);
+
 	for (int i = 0; i < boardVec.size(); i++)
 	{
 		for (int j = 0; j < boardVec[i].size(); j++)
@@ -118,6 +121,8 @@ void Application::addTile(wchar_t l, int x, int y, char status)
 	tile->setSize(54, 54);
 	tile->setEnabled(0);
 	tile->setInheritedFont(font);
+
+	std::lock_guard<std::mutex> lock(mutex);
 	board.add(tile);
 
 	letter var;
@@ -133,6 +138,8 @@ void Application::clear()
 	//I-Invalid
 	//P-PartOfInvalid
 	//B-Blank
+
+	std::lock_guard<std::mutex> lock(mutex);
 	for (int i = 0; i < 15; i++)
 		for (int j = 0; j < 15; j++)
 		{
@@ -144,10 +151,10 @@ void Application::clear()
 
 void Application::read_words()
 {
-	std::regex wordR("[a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+");
+	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
 	std::regex numberR("\\d+");
 
-	std::regex pair("\\([a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+,\\d+\\)");
+	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
 	std::string result;
 
 	std::cin >> result;
@@ -162,9 +169,10 @@ void Application::read_words()
 
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
-			std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
+			//std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
 
 			std::string item = word->str() + " " + number->str();
+			std::lock_guard<std::mutex> lock(mutex);
 			wordList->addItem(item);
 		}
 	}
@@ -223,6 +231,7 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 	listBox->setSize(300, 930);
 	listBox->setItemHeight(30);
 	listBox->setPosition(980, 50);
+
 	board.add(listBox);
 
 	return listBox;
@@ -258,7 +267,14 @@ void Application::run()
 	shapes = buildBoard();
 
 	wordList = createList();
-	read_stream();
+
+	std::thread readDataThread([this]() {
+		int x = 0;
+		while (true)
+		{
+			this->read_stream();
+		}
+	});
 
 	while (window.isOpen())
 	{
@@ -268,15 +284,23 @@ void Application::run()
 			if (event.type == sf::Event::Closed)
 				window.close();
 
+			std::lock_guard<std::mutex> lock(mutex);
 			board.handleEvent(event);
 		}
-		window.clear();
-		for (int i = 0; i < shapes.size(); i++)
+
 		{
-			window.draw(shapes[i]);
+			std::lock_guard<std::mutex> lock(mutex);
+			window.clear();
+			for (int i = 0; i < shapes.size(); i++)
+			{
+				window.draw(shapes[i]);
+			}
+			board.draw();
 		}
-		board.draw();
+
 		window.display();
 	}
+	close = true;
+	readDataThread.~thread();
 }
 

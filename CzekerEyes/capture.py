@@ -199,7 +199,7 @@ def detect_tiles(refImg):
 def main():
     # show_webcam()
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
-    testImg = cv2.imread('opencv_frame_1.png', 1)
+    testImg = cv2.imread('test_img/opencv_frame_1.png', 1)
     board_detection_BRISK(testImg)
 
 

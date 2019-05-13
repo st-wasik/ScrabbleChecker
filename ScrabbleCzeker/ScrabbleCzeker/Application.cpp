@@ -151,10 +151,10 @@ void Application::clear()
 
 void Application::read_words()
 {
-	std::regex wordR("[a-z¹æê³ñóœŸ¿]+");
+	std::regex wordR("[a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+");
 	std::regex numberR("\\d+");
 
-	std::regex pair("\\([a-z¹æê³ñóœŸ¿]+,\\d+\\)");
+	std::regex pair("\\([a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+,\\d+\\)");
 	std::string result;
 
 	std::cin >> result;
@@ -171,7 +171,10 @@ void Application::read_words()
 		{
 			//std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
 
-			std::string item = word->str() + " " + number->str();
+			auto wordToUpper = word->str();
+			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
+			std::string item = wordToUpper + " " + number->str();
+
 			std::lock_guard<std::mutex> lock(mutex);
 			wordList->addItem(item);
 		}
@@ -229,7 +232,8 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 	std::shared_ptr<tgui::ListBox> listBox = tgui::ListBox::create();
 	listBox->setRenderer(theme.getRenderer("ListBox"));
 	listBox->setSize(300, 930);
-	listBox->setItemHeight(30);
+	listBox->setItemHeight(36);
+	listBox->setTextSize(28);
 	listBox->setPosition(980, 50);
 
 	board.add(listBox);
@@ -244,6 +248,8 @@ Application::Application()
 	close(false)
 {
 	font = tgui::Font("../../TGUI-0.8/fonts/Amble-Bold.ttf");
+	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(60);
 }
 #else
 Application::Application()

@@ -40,8 +40,8 @@ processWords dictionary usedFields words  = do
     let scrabbleBoard = SB.fromList $ List.map toLower words 
     let (processedMatrix, points, newUsedFields) = processScrabbleBoard scrabbleBoard dictionary usedFields
     --printOut . Mx.fromLists . intersectMx . Mx.toLists $ processedMatrix
-    printOut processedMatrix
-    --printOut $ formatOutputMatrix processedMatrix
+    --printOut processedMatrix
+    printOut $ formatOutputMatrix processedMatrix
     printOut $ List.filter (\(_,a)-> a > 0) points
     beginNextCheck dictionary newUsedFields
 
@@ -51,8 +51,9 @@ intersectMx (x:xs) = x:(List.take 15 $ repeat $ SC.empty (0,0)): intersectMx xs
 
 -- | Converts processed matrix to string and formats it before sending to display manager
 formatOutputMatrix :: Matrix SChar -> String
-formatOutputMatrix matrix = show filtered
+formatOutputMatrix matrix = show filtered2
     where
+        filtered2 = List.map (\sc@(SChar l v p) -> if l == ' ' then (SChar '_' v p) else sc) filtered
         filtered = List.map (\sc@(SChar l v p) -> if v `elem` [SingleLetter, ConnectionPoint] then SChar l Valid p else sc) allLetters
         allLetters = Mx.toList matrix
 
@@ -73,5 +74,5 @@ filterDictionaryWords words = List.filter (\a -> len a && chars a) words
 -- | Prints immediately argument to stdout
 printOut :: Show a => a -> IO ()
 printOut obj = do
-    putStrLn . show $ obj
+    putStrLn . List.filter (/= '"') . show $ obj
     hFlush stdout

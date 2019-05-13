@@ -22,7 +22,7 @@ shortShow = True
 instance Show SValid where 
      show Valid   = "v"
      show Invalid = "i"
-     show NotSet  = " "
+     show NotSet  = "_"
      show PartOfInvalid = "p" 
      show SingleLetter = "s"
      show ConnectionPoint = "c"

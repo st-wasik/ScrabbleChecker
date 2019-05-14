@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
-from capture import plot_test_images
-from capture import show_webcam
+#from capture import plot_test_images
+#from capture import show_webcam
 from PIL import Image
 import pytesseract
 import cv2
@@ -44,56 +44,6 @@ def tesseract_recognition(name, thresh=False, blur=False, ):
     cv2.imshow("Image", image)
     cv2.imshow("Output", gray)
     cv2.waitKey(0)
-
-
-
-
-index = 0
-
-
-
-def matcher(imgSet, imgLetter):
-    outimg = []
-
-    for file in imgLetter:
-        imagesLetter = plot_test_images(file)[2]
-        imagesSet = plot_test_images(imgSet)[2]
-
-        orb = cv2.ORB_create()
-
-        kp1, des1 = orb.detectAndCompute(imagesSet, None)
-        kp2, des2 = orb.detectAndCompute(imagesLetter, None)
-
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-
-        # Match descriptors.
-        matches = bf.match(des1, des2)
-
-        # Sort them in the order of their distance.
-        matches = sorted(matches, key=lambda x: x.distance)
-
-        # Draw first 10 matches.
-        img3 = True
-        outimg.append(cv2.drawMatches(imagesSet, kp1, imagesLetter, kp2, matches[:10], flags=2, outImg=img3))
-
-    def toggle_images(event):
-        global index
-
-        if event.key == 'right':
-            index += 1
-        else:
-            index -= 1
-
-        if index < len(outimg):
-            plt.imshow(outimg[index])
-            plt.draw()
-        else:
-            plt.close()
-
-    plt.imshow(outimg[index])
-
-    plt.connect('key_press_event', toggle_images)
-    plt.show()
 
 
 
@@ -148,27 +98,26 @@ def template_match_json(imgTmp, imgFin):
 def switch(x):
     return {
         'aa': 'ą',
-        'cc':'ć',
-        'ee':'ę',
-        'll':'ł',
-        'nn':'ń',
-        'oo':'ó',
-        'ss':'ś',
-        'zz':'ź',
-        'zzz':'ż'
+        'cc': 'ć',
+        'ee': 'ę',
+        'll': 'ł',
+        'nn': 'ń',
+        'oo': 'ó',
+        'ss': 'ś',
+        'zz': 'ź',
+        'zzz': 'ż'
     }.get(x, x)
 
 
-
-
 def template_match(imgTmp, imgFin):
-    img = cv2.imread(imgTmp,0)
+    img = cv2.imread(imgTmp, 0)
     img2 = img.copy()
-    template = cv2.imread(imgFin,0)
+    template = imgFin  # cv2.imread(imgFin, 0)
+    template = template[:, :, 1]
     w, h = template.shape[::-1]
 
     methods = ['cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
-    # index = 1
+    index = 1
     avg_top = [0, 0]
     avg_bottom = [0, 0]
     for meth in methods:
@@ -206,15 +155,20 @@ def template_match(imgTmp, imgFin):
     avg_top[1] = avg_top[1] / 4
     avg_bottom[0] = avg_bottom[0] / 4
     avg_bottom[1] = avg_bottom[1] / 4
+    #print(avg_top, avg_bottom)
     f = open("letters.json", 'r')
     letters_json = json.loads(f.read())
     for letter, cords in letters_json.items():
         # print(cords, [avg_top, avg_bottom])
         if cords == [avg_top, avg_bottom]:
+            print(letter)
             return switch(letter)
-        else:
-            print(letter, "NOPE")
-            return " "
+
+        # else:
+            # print(letter, "NOPE")
+    print("Nope")
+    return " "
+
 
 def contures():
     img = cv2.imread('test_img/alfabet.jpg', 0)
@@ -231,6 +185,7 @@ def contures():
     cnt = contours[0]
 
     M = cv2.moments(cnt)
+
 
 def create_json():
     files = []
@@ -251,6 +206,15 @@ def create_json():
     x = json.dumps(letters_json)
     f = open("letters.json", 'w')
     f.write(x)
+
+
+def matrix_match(matrix):
+    refrence = "test_img/board.png"
+    string = ""
+    for img in matrix:
+        string += template_match(refrence, img)
+
+    return string
 
 def main():
     # #show_webcam(mirror=True)

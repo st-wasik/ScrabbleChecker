@@ -181,19 +181,20 @@ def detect_tiles(refImg):
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     tiles = []
 
-    for h in range(0, 14):
-        for w in range(0, 14):
+    for h in range(0, 15):
+        for w in range(0, 15):
             tile = refImg[20 + 35 * h:20 + 35 * (h + 1), 50 + 34 * w:50 + 34 * (w + 1)]
-            hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
-            hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
-            hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])
-            if (hisR[255] > 600 and hisG[225] > 10 and hisB[255] < 50):
-                # cv2.imshow('{}, {}'.format(h,w), tile)
-                tiles.append(tile)
+            # hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
+            # hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
+            # hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])
+            # if (hisR[255] > 600 and hisG[225] > 10 and hisB[255] < 50):
+            #     # cv2.imshow('{}, {}'.format(h,w), tile)
+            #     tiles.append(tile)
+            tiles.append(tile)
 
     # for i in range(0, tiles.__len__()):
     #     cv2.imshow('{}'.format(i), tiles[i])
-
+    #     cv2.waitKey()
     return tiles
 
 def main():

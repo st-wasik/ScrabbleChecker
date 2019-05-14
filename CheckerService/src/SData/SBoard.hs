@@ -40,6 +40,7 @@ placeSChars matrix (sc : scs) = placeSChars newMatrix scs
 
 -- | Sets proper validness for given SChar and places it on the SBoard
 --   Takes into account already placed SChars and updates its validness
+setProperValidness :: SChar -> Matrix SChar -> Matrix SChar
 setProperValidness sc@(SChar l Valid (8,8)) matrix
         | prev == NotSet = set $ SChar l ConnectionPoint (8,8)    
         | prev == Valid = set $ SChar l ConnectionPoint (8,8)    

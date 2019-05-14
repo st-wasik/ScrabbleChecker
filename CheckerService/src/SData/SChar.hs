@@ -64,12 +64,18 @@ printSCharList list = do
 printSCharList' [] = return ()
 
 printSCharList' [sc] = do
-     putStr $ (C.toUpper $ (letter sc)) : ""
+     let letter_ = (C.toUpper $ (letter sc))
+	     in if letter_ == ' '
+		    then putStr $ '_': ""
+			else putStr $ letter_ : ""
      putStr . show $ valid sc
      return ()
 
 printSCharList' (sc:scs) = do
-     putStr $ (C.toUpper $ (letter sc)) : ""
+     let letter_ = (C.toUpper $ (letter sc))
+	     in if letter_ == ' '
+		    then putStr $ '_': ""
+			else putStr $ letter_ : ""
      putStr . show $ valid sc
      putStr ","
      printSCharList' scs

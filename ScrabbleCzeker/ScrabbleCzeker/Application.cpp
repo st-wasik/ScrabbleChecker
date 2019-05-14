@@ -3,6 +3,7 @@
 #include <regex>
 #include <thread>
 #include <mutex>
+#include <cstdlib>
 
 std::vector<sf::RectangleShape> Application::buildBoard()
 {
@@ -103,7 +104,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	return toBuild;
 }
 
-void Application::addTile(wchar_t l, int x, int y, char status)
+void Application::addTile(wchar_t * l, int x, int y, char status)
 {
 	//field size is 60x60
 	//tile size is 54x54
@@ -169,8 +170,6 @@ void Application::read_words()
 
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
-			//std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
-
 			auto wordToUpper = word->str();
 			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
 			std::string item = wordToUpper + " " + number->str();
@@ -203,8 +202,10 @@ void Application::read_stream()
 			{
 				if (stream[i] != '_')
 				{
-					std::wint_t btowc(stream[i]);
-					addTile(btowc, counterx, countery, stream[i + 1]);
+					wchar_t letter;
+					std::mbtowc(&letter, &stream[i], 10);
+					//std::wint_t btowc(stream[i]);
+					addTile(&letter, counterx, countery, stream[i + 1]);
 				}
 				countery++;
 				if (countery > 14)

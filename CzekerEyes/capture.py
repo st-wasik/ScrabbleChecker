@@ -162,19 +162,23 @@ def draw_grid(refImg):
     h, w, r = refImg.shape
     print(h,w,r)
 
-    # h1 = 4
-    # w1 = 4
-    # tile = refImg[20+35*h1:20+35*(h1+1), 55+34*w1:55+34*(w1+1)]
-    # print(tile.shape)
+    # h1 = 14
+    # w1 = 14
+    # tile = refImg[28+35*h1:28+35*(h1+1), 48+34*w1:48+34*(w1+1)]
+    # # print(tile.shape)
+    # cv2.imshow('{} {}'.format(h1,w1),tile)
+    # cv2.imshow('refImg', refImg)
+    # cv2.waitKey()
+
 
     for i in range(0,16):
         widthDist = int((w-50)/16*i)
-        heightDist = int((h-35)/16*i)
+        heightDist = int((h-50)/16*i)
         print('widthDist', widthDist, 'heightDist', heightDist)
         # vertical
-        cv2.line(refImg, (45 + widthDist , 20), (45 + widthDist, h-50), (0, 255, 0), 2, 1)
+        cv2.line(refImg, (45 + widthDist , 30), (45 + widthDist, h-55), (0, 255, 0), 2, 1)
         # horizontal
-        cv2.line(refImg, (45, 20 + heightDist), (w-40, 20 + heightDist), (0, 255, 0), 2, 1)
+        cv2.line(refImg, (45, 30 + heightDist), (w-40, 30 + heightDist), (0, 255, 0), 2, 1)
 
     return refImg
 
@@ -184,7 +188,7 @@ def detect_tiles(refImg):
 
     for h in range(0, 15):
         for w in range(0, 15):
-            tile = refImg[20 + 35 * h:20 + 35 * (h + 1), 50 + 34 * w:50 + 34 * (w + 1)]
+            tile = refImg[28+35*h:28+35*(h+1), 48+34*w:48+34*(w+1)]
             # hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
             # hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
             # hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])
@@ -200,8 +204,8 @@ def detect_tiles(refImg):
 
 def main():
     # show_webcam()
-    # testImg = cv2.imread('test_img/one_place.jpg', 0)
-    testImg = cv2.imread('test_img/opencv_frame_1.png', 1)
+    # testImg = cv2.imread('test_img/one_place.jpg', 1)
+    testImg = cv2.imread('test_img/opencv_frame_8.png', 1)
     board_detection_BRISK(testImg)
 
 

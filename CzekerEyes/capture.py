@@ -84,14 +84,15 @@ def board_detection_ORB(testImg):
 def board_detection_BRISK(testImg):
 
     # Load and resize images
-    refImg = cv2.imread('test_img/reference2.jpg', 0)
+    refImg = cv2.imread('test_img/reference3.png', 0)
     colorTestImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2BGR)
     testImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2GRAY)
 
     if(testImg.size > 307200):
         testImg = cv2.resize(testImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
         colorTestImg = cv2.resize(colorTestImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
-    refImg = cv2.resize(refImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
+    if (refImg.size > 300000):
+        refImg = cv2.resize(refImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
 
     # Create BRISK, detect keypoints and descriptions
     brisk = cv2.BRISK_create(40)

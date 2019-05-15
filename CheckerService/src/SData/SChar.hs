@@ -66,17 +66,17 @@ printSCharList' [] = return ()
 
 printSCharList' [sc] = do
      let letter_ = (C.toUpper $ (letter sc))
-	     in if letter_ == ' '
-		    then putStr $ '_': ""
-			else putStr $ letter_ : ""
+         in if letter_ == ' '
+            then putStr $ '_': ""
+            else putStr $ letter_ : ""
      putStr . show $ valid sc
      return ()
 
 printSCharList' (sc:scs) = do
      let letter_ = (C.toUpper $ (letter sc))
-	     in if letter_ == ' '
-		    then putStr $ '_': ""
-			else putStr $ letter_ : ""
+         in if letter_ == ' '
+            then putStr $ '_': ""
+            else putStr $ letter_ : ""
      putStr . show $ valid sc
      putStr ","
      printSCharList' scs

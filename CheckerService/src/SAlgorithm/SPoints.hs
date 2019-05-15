@@ -3,15 +3,16 @@ module SAlgorithm.SPoints(wordValue) where
 import SData.SChar
 
 wordValue :: [(Int, Int)] -> SWord -> Int
-wordValue usedFields word  = chars * wordExtra
+wordValue usedFields word  = calculated
     where
+        calculated = if (position $ word !! 0) `elem` usedFields && (position $ last word) `elem` usedFields then 0 else chars * wordExtra
         chars = sum $ map (charValue usedFields) word
         wordExtra = product $ map (charPosWordFactor usedFields) word
 
 charValue :: [(Int, Int)] -> SChar -> Int
 charValue usedFields char = charVal * charPosFactor char
     where
-        charVal = if (position char) `elem` usedFields then 0 else charPoints char 
+        charVal = if (position char) `elem` usedFields then 1 else charPoints char 
 
 charPoints :: SChar -> Int
 charPoints char

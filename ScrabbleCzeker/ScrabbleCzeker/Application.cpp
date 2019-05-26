@@ -103,7 +103,7 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	return toBuild;
 }
 
-void Application::addTile(wchar_t l, int x, int y, char status)
+void Application::addTile(sf::String l, int x, int y, char status)
 {
 	//field size is 60x60
 	//tile size is 54x54
@@ -116,7 +116,7 @@ void Application::addTile(wchar_t l, int x, int y, char status)
 	if (status == 'p')
 		tile->setRenderer(theme.getRenderer("ButtonPartOfIn"));
 	tile->setPosition((1 + y) * 5 + y * 60 + 3, (1 + x) * 5 + x * 60 + 3);
-	tile->setText(l);
+	tile->setText(sf::String::fromUtf8(l.begin(),l.end()));
 	tile->setTextSize(38);
 	tile->setSize(54, 54);
 	tile->setEnabled(0);
@@ -203,8 +203,9 @@ void Application::read_stream()
 			{
 				if (stream[i] != '_')
 				{
-					std::wint_t btowc(stream[i]);
-					addTile(btowc, counterx, countery, stream[i + 1]);
+					//std::wint_t btowc(stream[i]);
+					//std::cout <<(255 & int(stream[i])) << std::endl;
+					addTile(sf::String(stream[i]), counterx, countery, stream[i + 1]);
 				}
 				countery++;
 				if (countery > 14)
@@ -223,10 +224,11 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 {
 	auto label = tgui::Label::create();
 	label->setRenderer(theme.getRenderer("ToolTip"));
-	label->setText("\t\tWords");
+	label->setText("\t\t\tWords");
 	label->setPosition(980, 0);
 	label->setSize(300, 50);
 	label->setTextSize(32);
+	label->setInheritedFont(font);
 	board.add(label);
 
 	std::shared_ptr<tgui::ListBox> listBox = tgui::ListBox::create();
@@ -235,6 +237,8 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 	listBox->setItemHeight(36);
 	listBox->setTextSize(28);
 	listBox->setPosition(980, 50);
+	listBox->setInheritedFont(font);
+
 
 	board.add(listBox);
 
@@ -307,6 +311,6 @@ void Application::run()
 		window.display();
 	}
 	close = true;
-	readDataThread.~thread();
+	readDataThread.detach();
 }
 

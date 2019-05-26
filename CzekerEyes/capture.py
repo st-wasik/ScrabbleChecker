@@ -167,10 +167,14 @@ def draw_grid(refImg):
     h, w, r = refImg.shape
     print(h, w, r)
 
-    # h1 = 4
-    # w1 = 4
-    # tile = refImg[20+35*h1:20+35*(h1+1), 55+34*w1:55+34*(w1+1)]
-    # print(tile.shape)
+    # h1 = 14
+    # w1 = 14
+    # tile = refImg[28+35*h1:28+35*(h1+1), 48+34*w1:48+34*(w1+1)]
+    # # print(tile.shape)
+    # cv2.imshow('{} {}'.format(h1,w1),tile)
+    # cv2.imshow('refImg', refImg)
+    # cv2.waitKey()
+
 
     for i in range(0, 16):
         widthDist = int((w - 230) / 16 * i)
@@ -197,7 +201,6 @@ def detect_tiles(refImg):
         for j in range(0, 15):
             tile = refImg[start[1] + height * i: start[1] + height * (i + 1),
                    start[0] + width * j: start[0] + width * (j + 1)]
-
             # hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
             # hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
             # hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])

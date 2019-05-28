@@ -53,6 +53,7 @@ word = map letter
 
 
 -- | Prints formated SChar list
+printSCharList :: [SChar] -> IO ()
 printSCharList list = do
      let formattedList = List.map (\sc@(SChar l v p) -> if v == ConnectionPoint then SChar l Valid p else sc) list
      let formattedList2 = List.map (\sc@(SChar l v p) -> if v == SingleLetter then SChar l Invalid p else sc) formattedList
@@ -65,17 +66,17 @@ printSCharList' [] = return ()
 
 printSCharList' [sc] = do
      let letter_ = (C.toUpper $ (letter sc))
-	     in if letter_ == ' '
-		    then putStr $ '_': ""
-			else putStr $ letter_ : ""
+         in if letter_ == ' '
+            then putStr $ '_': ""
+            else putStr $ letter_ : ""
      putStr . show $ valid sc
      return ()
 
 printSCharList' (sc:scs) = do
      let letter_ = (C.toUpper $ (letter sc))
-	     in if letter_ == ' '
-		    then putStr $ '_': ""
-			else putStr $ letter_ : ""
+         in if letter_ == ' '
+            then putStr $ '_': ""
+            else putStr $ letter_ : ""
      putStr . show $ valid sc
      putStr ","
      printSCharList' scs

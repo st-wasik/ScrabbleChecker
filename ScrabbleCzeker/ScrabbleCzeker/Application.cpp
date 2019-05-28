@@ -3,7 +3,6 @@
 #include <regex>
 #include <thread>
 #include <mutex>
-#include <cstdlib>
 
 std::vector<sf::RectangleShape> Application::buildBoard()
 {
@@ -173,6 +172,8 @@ void Application::read_words()
 
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
+			//std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
+
 			auto wordToUpper = word->str();
 			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
 			std::string item = wordToUpper + " " + number->str();
@@ -245,10 +246,11 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 {
 	auto label = tgui::Label::create();
 	label->setRenderer(theme.getRenderer("ToolTip"));
-	label->setText("\t\tWords");
+	label->setText("\t\t\tWords");
 	label->setPosition(980, 0);
 	label->setSize(300, 50);
 	label->setTextSize(32);
+	label->setInheritedFont(font);
 	board.add(label);
 
 	std::shared_ptr<tgui::ListBox> listBox = tgui::ListBox::create();
@@ -257,6 +259,8 @@ std::shared_ptr<tgui::ListBox> Application::createList()
 	listBox->setItemHeight(36);
 	listBox->setTextSize(28);
 	listBox->setPosition(980, 50);
+	listBox->setInheritedFont(font);
+
 
 	board.add(listBox);
 
@@ -329,6 +333,6 @@ void Application::run()
 		window.display();
 	}
 	close = true;
-	readDataThread.~thread();
+	readDataThread.detach();
 }
 

@@ -1,10 +1,13 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import urllib
 import os
 import time
+from letters import matrix_match
 
 GOOD_MATCH_RATIO = 0.1
+
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(0)
@@ -26,6 +29,7 @@ def show_webcam(mirror=False):
             img_counter += 1
 
     cv2.destroyAllWindows()
+
 
 def plot_test_images(img):
     alphabet = cv2.imread(img)
@@ -55,6 +59,7 @@ def plot_test_images(img):
     cv2.destroyAllWindows()
     return images
 
+
 def board_detection_ORB(testImg):
     refImg = cv2.imread('test_img/reference2.jpg', 0)
     cv2.imshow('reference', refImg)
@@ -81,17 +86,18 @@ def board_detection_ORB(testImg):
 
     plt.imshow(result), plt.show()
 
-def board_detection_BRISK(testImg):
 
+def board_detection_BRISK(testImg):
     # Load and resize images
-    refImg = cv2.imread('test_img/reference2.jpg', 0)
+    refImg = cv2.imread('test_img/reference4.png', 0)
     colorTestImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2BGR)
     testImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2GRAY)
 
-    if(testImg.size > 307200):
-        testImg = cv2.resize(testImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
-        colorTestImg = cv2.resize(colorTestImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
-    refImg = cv2.resize(refImg, None, fx=0.3, fy=0.3, interpolation=cv2.INTER_AREA)
+    if (testImg.size > 307200):
+        testImg = cv2.resize(testImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+        colorTestImg = cv2.resize(colorTestImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    if (refImg.size > 300000):
+        refImg = cv2.resize(refImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
 
     # Create BRISK, detect keypoints and descriptions
     brisk = cv2.BRISK_create(40)
@@ -109,35 +115,36 @@ def board_detection_BRISK(testImg):
             good.append(m)
 
     # If there is enough matches warp the board, draw grid, find tiles and plot results
-    if len(good)>10:
-        src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1,1,2)
+    if len(good) > 10:
+        src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
         dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
         M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
         matchesMask = mask.ravel().tolist()
 
-        h,w = refImg.shape
-        pts = np.float32([[0,0],[0,h-1],[w-1,h-1],[w-1,0]]).reshape(-1,1,2)
-        dst = cv2.perspectiveTransform(pts,M)
+        h, w = refImg.shape
+        pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
+        dst = cv2.perspectiveTransform(pts, M)
 
-        pts2 = np.float32([[0,0],[w-1,0],[0,h-1],[w-1,h-1]]).reshape(-1,1,2)
-        dst2 = cv2.perspectiveTransform(pts2,M)
+        pts2 = np.float32([[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]]).reshape(-1, 1, 2)
+        dst2 = cv2.perspectiveTransform(pts2, M)
 
-        img2 = cv2.polylines(testImg, [np.int32(dst)],True,255,3,cv2.LINE_AA)
+        img2 = cv2.polylines(testImg, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
 
-        draw_params = dict(matchColor = (0,255,0),
-                           singlePointColor = None,
-                           matchesMask = matchesMask,
-                           flags = 2)
+        draw_params = dict(matchColor=(0, 255, 0),
+                           singlePointColor=None,
+                           matchesMask=matchesMask,
+                           flags=2)
 
-
-        board_size = np.float32([[0,0],[600,0],[0,600],[600,600]])
+        board_size = np.float32([[0, 0], [3000, 0], [0, 3000], [3000, 3000]])
         matrix = cv2.getPerspectiveTransform(dst2, board_size)
 
-        warpped_board = cv2.warpPerspective(colorTestImg, matrix, (600,600))
-        detect_tiles(warpped_board)
+        warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
+        matrix_match( detect_tiles(warpped_board))
         warpped_board = draw_grid(warpped_board)
         warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
+        # cv2.imshow('warpped', warpped_board)
+        # cv2.waitKey()
 
         img3 = cv2.drawMatches(refImg, kp1, img2, kp2, good, None, **draw_params)
 
@@ -159,31 +166,42 @@ def board_detection_BRISK(testImg):
 def draw_grid(refImg):
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     h, w, r = refImg.shape
-    print(h,w,r)
+    print(h, w, r)
 
-    # h1 = 4
-    # w1 = 4
-    # tile = refImg[20+35*h1:20+35*(h1+1), 55+34*w1:55+34*(w1+1)]
-    # print(tile.shape)
+    # h1 = 14
+    # w1 = 14
+    # tile = refImg[28+35*h1:28+35*(h1+1), 48+34*w1:48+34*(w1+1)]
+    # # print(tile.shape)
+    # cv2.imshow('{} {}'.format(h1,w1),tile)
+    # cv2.imshow('refImg', refImg)
+    # cv2.waitKey()
 
-    for i in range(0,16):
-        widthDist = int((w-50)/16*i)
-        heightDist = int((h-35)/16*i)
+
+    for i in range(0, 16):
+        widthDist = int((w - 230) / 16 * i)
+        heightDist = int((h - 230) / 16 * i)
         print('widthDist', widthDist, 'heightDist', heightDist)
         # vertical
-        cv2.line(refImg, (45 + widthDist , 20), (45 + widthDist, h-50), (0, 255, 0), 2, 1)
+        cv2.line(refImg, (210 + widthDist, 140), (210 + widthDist, h - 270), (0, 255, 0), 8, 1)
         # horizontal
-        cv2.line(refImg, (45, 20 + heightDist), (w-40, 20 + heightDist), (0, 255, 0), 2, 1)
+        cv2.line(refImg, (210, 140 + heightDist), (w - 195, 140 + heightDist), (0, 255, 0), 8, 1)
 
     return refImg
+
 
 def detect_tiles(refImg):
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     tiles = []
+    h, w, r = refImg.shape
 
-    for h in range(0, 15):
-        for w in range(0, 15):
-            tile = refImg[20 + 35 * h:20 + 35 * (h + 1), 50 + 34 * w:50 + 34 * (w + 1)]
+    width = (210 + int((w - 230) / 16 * 1)) - (210 + int((w - 230) / 16 * 0))
+    height = (140 + int((h - 230) / 16 * 1)) - (140 + int((h - 230) / 16 * 0))
+    start = [(210 + int((w - 230) / 16 * 0)), (140 + int((h - 230) / 16 * 0))]
+
+    for i in range(0, 15):
+        for j in range(0, 15):
+            tile = refImg[start[1] + height * i: start[1] + height * (i + 1),
+                   start[0] + width * j: start[0] + width * (j + 1)]
             # hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
             # hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
             # hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])
@@ -197,11 +215,46 @@ def detect_tiles(refImg):
     #     cv2.waitKey()
     return tiles
 
+
+def show_ip_webcam():
+    url = "http://192.168.0.102:8080/shot.jpg"
+    photoUrl = "http://192.168.0.102:8080/photoaf.jpg"
+    img_counter = 0
+    while True:
+        frameRaw = urllib.request.urlopen(url)
+        frame = np.array(bytearray(frameRaw.read()), dtype=np.uint8)
+        frame = cv2.imdecode(frame, -1)
+        # frameResized = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+        cv2.imshow('frame', frame)
+        k = cv2.waitKey(1)
+        if k == 27:
+            break  # esc to quit
+        # elif k == 32:
+        #     # Spacebar pressed
+        #     img_name = 'board_frame_{}.png'.format(img_counter)
+        #     cv2.imwrite(img_name, frame)
+        #     print("{} written!".format(img_name))
+        #     img_counter += 1
+        elif k == 32:
+            # Spacebar pressed
+            frameRaw = urllib.request.urlopen(photoUrl)
+            frame = np.array(bytearray(frameRaw.read()), dtype=np.uint8)
+            frame = cv2.imdecode(frame, -1)
+            # frame = cv2.resize(frame, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
+            img_name = 'board_frame_{}.png'.format(img_counter)
+            cv2.imwrite(img_name, frame)
+            print("{} written!".format(img_name))
+            img_counter += 1
+
+            board_detection_BRISK(frame)
+
+
 def main():
     # show_webcam()
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
-    testImg = cv2.imread('test_img/opencv_frame_1.png', 1)
+    testImg = cv2.imread('test_img/board_frame_11.png', 1)
     board_detection_BRISK(testImg)
+    # show_ip_webcam()
 
 
 if __name__ == '__main__':

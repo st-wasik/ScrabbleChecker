@@ -29,7 +29,11 @@ private:
 
 	tgui::Font font;
 
+<<<<<<< HEAD
 	void addTile(int letter, int x, int y, char status);
+=======
+	void addTile(sf::String letter, int x, int y, char status);
+>>>>>>> 1ed6782fecc87b67e908b0554c359444f84425a8
 
 	std::vector<sf::RectangleShape> buildBoard();
 

@@ -29,7 +29,7 @@ private:
 
 	tgui::Font font;
 
-	void addTile(wchar_t * letter, int x, int y, char status);
+	void addTile(int letter, int x, int y, char status);
 
 	std::vector<sf::RectangleShape> buildBoard();
 
@@ -40,6 +40,8 @@ private:
 	std::shared_ptr<tgui::ListBox> createList();
 
 	std::shared_ptr<tgui::ListBox> wordList;
+
+	int chooseCharacter(int value);
 
 	std::mutex mutex;
 

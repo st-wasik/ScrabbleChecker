@@ -104,11 +104,12 @@ std::vector<sf::RectangleShape> Application::buildBoard()
 	return toBuild;
 }
 
-void Application::addTile(wchar_t * l, int x, int y, char status)
+void Application::addTile(int l, int x, int y, char status)
 {
 	//field size is 60x60
 	//tile size is 54x54
 	//with this we can see field color (type) under tile
+
 	auto tile = tgui::Button::create();
 	if (status == 'v')
 		tile->setRenderer(theme.getRenderer("ButtonValid"));
@@ -117,11 +118,13 @@ void Application::addTile(wchar_t * l, int x, int y, char status)
 	if (status == 'p')
 		tile->setRenderer(theme.getRenderer("ButtonPartOfIn"));
 	tile->setPosition((1 + y) * 5 + y * 60 + 3, (1 + x) * 5 + x * 60 + 3);
-	tile->setText(l);
+	tile->setText(wchar_t(l));
 	tile->setTextSize(38);
 	tile->setSize(54, 54);
 	tile->setEnabled(0);
 	tile->setInheritedFont(font);
+
+	std::cout << char(l) << std::endl;
 
 	std::lock_guard<std::mutex> lock(mutex);
 	board.add(tile);
@@ -202,10 +205,11 @@ void Application::read_stream()
 			{
 				if (stream[i] != '_')
 				{
-					wchar_t letter;
-					std::mbtowc(&letter, &stream[i], 10);
-					//std::wint_t btowc(stream[i]);
-					addTile(&letter, counterx, countery, stream[i + 1]);
+					//wchar_t letter;
+					//std::mbtowc(&letter, &stream[i], 10);
+					
+					//addTile(letter, counterx, countery, stream[i + 1]);
+					addTile(chooseCharacter(int(stream[i])), counterx, countery, stream[i + 1]);
 				}
 				countery++;
 				if (countery > 14)
@@ -218,6 +222,23 @@ void Application::read_stream()
 		}
 	}
 	read_words();
+}
+
+int Application::chooseCharacter(int value)
+{
+	switch (value)
+	{
+	case 157: return 321; break;
+	case 164: return 260; break;
+	case 168: return 280; break;
+	case 224: return 211; break;
+	case 151: return 346; break;
+	case 189: return 379; break;
+	case 143: return 262; break;
+	case 227: return 323; break;
+	case 141: return 377; break;
+	default: return value; break;
+	}
 }
 
 std::shared_ptr<tgui::ListBox> Application::createList()

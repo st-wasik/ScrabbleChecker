@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import urllib
 import os
 import time
+from letters import matrix_match
 
 GOOD_MATCH_RATIO = 0.1
 
@@ -139,7 +140,7 @@ def board_detection_BRISK(testImg):
         matrix = cv2.getPerspectiveTransform(dst2, board_size)
 
         warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
-        detect_tiles(warpped_board)
+        matrix_match( detect_tiles(warpped_board))
         warpped_board = draw_grid(warpped_board)
         warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
         # cv2.imshow('warpped', warpped_board)

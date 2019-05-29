@@ -10,9 +10,13 @@ import SData.SBoard as SB
 import STest
 import Data.Char
 import System.IO
+import System.IO.Strict as Strict
 
 main :: IO ()
 main = do 
+    enc <- mkTextEncoding "CP1250"
+    hSetEncoding stdin enc
+    hSetEncoding stdout enc
     dict <- initializeDictionary
     beginNextCheck dict []
 
@@ -61,7 +65,11 @@ formatOutputMatrix matrix = show filtered2
 -- | Initializes directory for use
 initializeDictionary :: IO (Set String)
 initializeDictionary = do
-    dictionaryRaw <- readFile "./sjp/slowa.txt"
+    handle <- openFile "./sjp/slowa.txt" ReadMode  
+    --enc <- mkTextEncoding "CP1250"
+    hSetEncoding handle utf8
+    dictionaryRaw <- Strict.hGetContents handle  
+    hClose handle
     return . Set.fromList . filterDictionaryWords $ words dictionaryRaw
 
 -- | Drops words that are one letter long or have two the same letters
@@ -77,3 +85,20 @@ printOut :: Show a => a -> IO ()
 printOut obj = do
     putStrLn . List.filter (/= '"') . show $ obj
     hFlush stdout
+
+-- | Prints immediately argument to stdout
+printOutPoints obj = do
+    putStr "["
+    printOutPoints' obj
+
+printOutPoints' ((str, p):xs) = do
+	putStr "("
+	putStr str
+	putStr ", "
+	putStr $ show p
+	putStr ")"
+	if length xs > 0 then putStr ", " else putStr ""
+	hFlush stdout
+	printOutPoints' xs
+	
+printOutPoints' [] = putStrLn "]"

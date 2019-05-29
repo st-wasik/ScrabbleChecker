@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
-#from capture import plot_test_images
-#from capture import show_webcam
+# from capture import plot_test_images
+# from capture import show_webcam
 from PIL import Image
 import pytesseract
 import cv2
@@ -9,13 +9,13 @@ import json
 import re
 import math
 
+
 def tesseract_recognition(name, thresh=False, blur=False, ):
-    print (name)
-    #for i in range(0,8):
+    # print (name)
+    # for i in range(0,8):
     # load the example image and convert it to grayscale
-    image = cv2.imread(name)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.bitwise_not(gray)
+    # image = cv2.imread(name)
+    gray = cv2.cvtColor(name, cv2.COLOR_BGR2GRAY)[25:148, 25:148]
 
     # check to see if we should apply thresholding to preprocess the
     # image
@@ -37,28 +37,28 @@ def tesseract_recognition(name, thresh=False, blur=False, ):
     # load the image as a PIL/Pillow image, apply OCR, and then delete
     # the temporary file
     pytesseract.pytesseract.tesseract_cmd = r'D:\Programy\Tesseract-OCR\tesseract.exe'
-    text = pytesseract.image_to_string(Image.open(filename), lang="pol", config="-c tessedit_char_whitelist=AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ --psm 10")
+    text = pytesseract.image_to_string(Image.open(filename), lang="pol",
+                                       config="-c tessedit_char_whitelist=AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ --psm 10")
     os.remove(filename)
     # print("lol")
     print(text)
 
     # show the output images
-    cv2.imshow("Image", image)
+    cv2.imshow("Image", name)
     cv2.imshow("Output", gray)
     cv2.waitKey(0)
 
 
-
 def template_match_json(imgTmp, imgFin):
-    img = cv2.imread(imgTmp,0)
+    img = cv2.imread(imgTmp, 0)
     img2 = img.copy()
-    template = cv2.imread(imgFin,0)
+    template = cv2.imread(imgFin, 0)
     w, h = template.shape[::-1]
 
     methods = ['cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
     # index = 1
-    avg_top = [0,0]
-    avg_bottom = [0,0]
+    avg_top = [0, 0]
+    avg_bottom = [0, 0]
     for meth in methods:
 
         img = img2.copy()
@@ -90,10 +90,10 @@ def template_match_json(imgTmp, imgFin):
         # #plt.pause(10)
         # #plt.close()
         # index +=1
-    avg_top[0] = avg_top[0]/4
-    avg_top[1] = avg_top[1]/4
-    avg_bottom[0] = avg_bottom[0]/4
-    avg_bottom[1] = avg_bottom[1]/4
+    avg_top[0] = avg_top[0] / 4
+    avg_top[1] = avg_top[1] / 4
+    avg_bottom[0] = avg_bottom[0] / 4
+    avg_bottom[1] = avg_bottom[1] / 4
     return avg_top, avg_bottom
 
 
@@ -110,32 +110,34 @@ def switch(x):
         'zzz': 'ż'
     }.get(x, x)
 
+
 def avg_met(x):
     return {
-        1:1,
-        2:4,
-        3:4,
-        4:2,
-        5:2
+        1: 1,
+        2: 4,
+        3: 4,
+        4: 2,
+        5: 2
     }.get(x, x)
 
-def template_match(imgTmp, imgFin,ink):
+
+def template_match(imgTmp, imgFin, ink):
     img = cv2.imread(imgTmp, 0)
 
     img2 = img.copy()
-    template = cv2.cvtColor(imgFin, cv2.COLOR_BGR2GRAY)[25:148, 25:148] # cv2.imread(imgFin, 0)
-    #cv2.imwrite("test1.png",template)
-    #template = template[:, :, 1]
+    template = cv2.cvtColor(imgFin, cv2.COLOR_BGR2GRAY)[25:148, 25:148]  # cv2.imread(imgFin, 0)
+    # cv2.imwrite("test1.png",template)
+    # template = template[:, :, 1]
     w, h = template.shape[::-1]
 
     methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
     index = 1
     avg_top = [0, 0]
     avg_bottom = [0, 0]
-    fail =0
-    top_left_box=(1075, 855)
-    bottom_right_box=(1860, 1950)
-    top_box=(1390,1790)
+    fail = 0
+    top_left_box = (1075, 855)
+    bottom_right_box = (1860, 1950)
+    top_box = (1390, 1790)
     for meth in methods:
 
         img = img2.copy()
@@ -150,35 +152,18 @@ def template_match(imgTmp, imgFin,ink):
             top_left = max_loc
 
         bottom_right = (top_left[0] + w, top_left[1] + h)
-        print(top_left[0],">=",top_left_box[0]," ",top_left[1],">=",top_left_box[1]," ",top_left[0],"<=",bottom_right_box[0]," ",top_left[1],"<=",bottom_right_box[1])
-        if not(top_left[0]>=top_left_box[0] and top_left[1]>=top_left_box[1] and top_left[0]<=bottom_right_box[0] and top_left[1]<=bottom_right_box[1]):
-            print("eh1")
-            print(top_left[1],"<",top_box[1],top_left[1],">=",top_left_box[1])
-            if top_left[1]<top_box[1] and top_left[1]>=top_left_box[1]:
-                print("eh2")
-                print(top_left[0],"<",top_box[0],top_left[0],">=",top_left_box[0])
-                if top_left[0]<top_box[0] and top_left[0]>=top_left_box[0]:
-                    fail+=0
-                    print("eh3")
-                else:
-                    fail+=1
-            else:
-                fail+=1
-        elif not(top_left[1]<top_box[1] and top_left[1]>=top_left_box[1]):
-            print(top_left[1], "<", top_box[1], top_left[1], ">=", top_left_box[1])
-            if top_left[0] < top_box[0] and top_left[0] >= top_left_box[0]:
-                print(top_left[0], "<", top_box[0], top_left[0], ">=", top_left_box[0])
-                fail += 0
-            else:
-                print(top_left[0], "<", top_box[0], top_left[0], ">=", top_left_box[0])
-                fail += 1
 
+        if not (top_left_box[0] <= top_left[0] <= bottom_right_box[0]) or not (
+                top_left_box[1] <= top_left[1] <= bottom_right_box[1]):
+            fail += 1
+        elif top_left[0] >= top_box[0] and top_left[1] >= top_box[1]:
+            fail += 1
 
-        if fail>=2:
-            avg_top=[1,1]
-            avg_bottom=[1,1]
+        if fail >= 2:
+            avg_top = [1, 1]
+            avg_bottom = [1, 1]
             break
-        print("top: ",top_left,"bottom: ",bottom_right)
+        print("top: ", top_left, "bottom: ", bottom_right)
         avg_top[0] += top_left[0] * avg_met(index)
         avg_top[1] += top_left[1] * avg_met(index)
 
@@ -194,26 +179,24 @@ def template_match(imgTmp, imgFin,ink):
         # plt.show()
         # plt.pause(3)
         # plt.close()
-        index +=1
+        index += 1
     avg_top[0] = math.ceil(avg_top[0] / 13)
     avg_top[1] = math.ceil(avg_top[1] / 13)
     avg_bottom[0] = math.ceil(avg_bottom[0] / 13)
     avg_bottom[1] = math.ceil(avg_bottom[1] / 13)
-    if not (avg_top[0] >= top_left_box[0] and avg_top[1] >= top_left_box[1] and avg_top[0] <= bottom_right_box[0] and
-            avg_top[1] <= bottom_right_box[1]):
-        if avg_top[1] < top_box[1] and avg_top[1] >= top_left_box[1]:
-            if avg_top[0] < top_box[0] and avg_top[0] >= top_left_box[0]:
-                fail += 0
-            else:
-                avg_top = [1, 1]
-                avg_bottom = [1, 1]
-        else:
-            avg_top = [1, 1]
-            avg_bottom = [1, 1]
-    if fail<2:
-        ind_list=[30,16]
+
+    if not (top_left_box[0] <= top_left[0] <= bottom_right_box[0]) and not (
+            top_left_box[1] <= top_left[1] <= bottom_right_box[1]):
+        avg_top = [1, 1]
+        avg_bottom = [1, 1]
+    elif top_left[0] >= top_box[0] and top_left[1] >= top_box[1]:
+        avg_top = [1, 1]
+        avg_bottom = [1, 1]
+
+    if fail < 2:
+        ind_list = [30, 16]
         if ink in ind_list:
-            index=1
+            index = 1
             for meth in methods:
 
                 img = img2.copy()
@@ -231,7 +214,7 @@ def template_match(imgTmp, imgFin,ink):
 
                 cv2.rectangle(img, top_left, bottom_right, 255, 50)
                 plt.subplot(121), plt.imshow(template, cmap='gray')
-                plt.title('What detection'+ str(index)), plt.xticks([]), plt.yticks([])
+                plt.title('What detection' + str(index)), plt.xticks([]), plt.yticks([])
                 plt.subplot(122), plt.imshow(img, cmap='gray')
                 plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
                 plt.suptitle(meth)
@@ -241,7 +224,7 @@ def template_match(imgTmp, imgFin,ink):
                 index += 1
         tup_top = tuple(avg_top)
         tup_bottom = tuple(avg_bottom)
-        cv2.rectangle(img, tup_top, tup_bottom, color=255, thickness=70,)
+        cv2.rectangle(img, tup_top, tup_bottom, color=255, thickness=70, )
         plt.subplot(121), plt.imshow(template, cmap='gray')
         plt.title('What detection'), plt.xticks([]), plt.yticks([])
         plt.subplot(122), plt.imshow(img, cmap='gray')
@@ -258,7 +241,7 @@ def template_match(imgTmp, imgFin,ink):
             return switch(letter)
 
         # else:
-            # print(letter, "NOPE")
+        # print(letter, "NOPE")
     print("Nope")
     return " "
 
@@ -289,7 +272,7 @@ def create_json():
         files.append(folder + file)
     letters_json = {}
     for file in files:
-        match = re.search(regex,file)
+        match = re.search(regex, file)
         if match:
             name = match.group(0)[1:-1]
         else:
@@ -304,13 +287,14 @@ def create_json():
 def matrix_match(matrix):
     refrence = "test_img/board_frame_00.png"
     string = ""
-    index=1
+    index = 1
     for img in matrix:
         print("index {}".format(index))
-
-        string += template_match(refrence, img,index)
+        tesseract_recognition(img)
+        #string += template_match(refrence, img, index)
         index += 1
     return string
+
 
 def main():
     # #show_webcam(mirror=True)
@@ -319,14 +303,15 @@ def main():
     refrence = "test_img/board_frame_00.png"
     for file in os.listdir(folder):
         files.append(folder + file)
-        #plot_test_images(folder + file)
-        #tesseract_recognition(folder + file)
+        # plot_test_images(folder + file)
+        # tesseract_recognition(folder + file)
 
     test = ""
     for file in files:
         test += template_match(refrence, file)
     print(test)
     # create_json()
+
 
 if __name__ == '__main__':
     main()

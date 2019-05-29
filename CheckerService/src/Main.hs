@@ -47,7 +47,7 @@ processWords dictionary usedFields words  = do
     --printOut processedMatrix
     printSCharList $ Mx.toList processedMatrix
     --printOut $ formatOutputMatrix processedMatrix
-    printOut $ List.filter (\(_,a)-> a > 0) points
+    printOutPoints $ List.filter (\(_,a)-> a > 0) points
     beginNextCheck dictionary newUsedFields
 
 -- | Intersects existing rows with empty rows to improve readbility in terminal
@@ -94,11 +94,12 @@ printOutPoints obj = do
 printOutPoints' ((str, p):xs) = do
 	putStr "("
 	putStr str
-	putStr ", "
+	putStr ","
 	putStr $ show p
 	putStr ")"
 	if length xs > 0 then putStr ", " else putStr ""
-	hFlush stdout
 	printOutPoints' xs
 	
-printOutPoints' [] = putStrLn "]"
+printOutPoints' [] = do
+	putStrLn "]"
+	hFlush stdout

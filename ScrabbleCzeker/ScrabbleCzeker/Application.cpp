@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <iostream>
+#include <algorithm>
 #include <regex>
 #include <thread>
 #include <mutex>
@@ -123,8 +124,6 @@ void Application::addTile(int l, int x, int y, char status)
 	tile->setEnabled(0);
 	tile->setInheritedFont(font);
 
-	std::cout << char(l) << std::endl;
-
 	std::lock_guard<std::mutex> lock(mutex);
 	board.add(tile);
 
@@ -172,8 +171,6 @@ void Application::read_words()
 
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
-			//std::cout << word->str() << " " << std::stoi(number->str()) << std::endl;
-
 			auto wordToUpper = word->str();
 			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
 			std::string item = wordToUpper + " " + number->str();
@@ -210,7 +207,7 @@ void Application::read_stream()
 					//std::mbtowc(&letter, &stream[i], 10);
 					
 					//addTile(letter, counterx, countery, stream[i + 1]);
-					addTile(chooseCharacter(int(stream[i])), counterx, countery, stream[i + 1]);
+					addTile(chooseCharacter(((unsigned int)stream[i]) & 0xFF) , counterx, countery, stream[i + 1]);
 				}
 				countery++;
 				if (countery > 14)
@@ -229,15 +226,16 @@ int Application::chooseCharacter(int value)
 {
 	switch (value)
 	{
-	case 157: return 321; break;
-	case 164: return 260; break;
-	case 168: return 280; break;
-	case 224: return 211; break;
-	case 151: return 346; break;
-	case 189: return 379; break;
-	case 143: return 262; break;
-	case 227: return 323; break;
-	case 141: return 377; break;
+		// 1250 to Unicode
+	case 163: return 321; break; //Ł
+	case 165: return 260; break; //Ą
+	case 202: return 280; break; //Ę
+	case 221: return 211; break; //Ó
+	case 140: return 346; break; //Ś
+	case 175: return 379; break; //Ż
+	case 198: return 262; break; //Ć
+	case 209: return 323; break; //Ń
+	case 143: return 377; break; //Ź
 	default: return value; break;
 	}
 }

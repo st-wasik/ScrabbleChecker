@@ -153,14 +153,16 @@ void Application::clear()
 
 void Application::read_words()
 {
-	std::regex wordR("[a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+");
-	std::regex numberR("\\d+");
+	//this file is saved with cp1250 encoding
 
-	std::regex pair("\\([a-zï¿½ï¿½ï¿½ï¿½óœŸ¿]+,\\d+\\)");
+	std::regex wordR(R"([a-z¹æê³ñóœŸ¿]+)");
+	std::regex numberR(R"(\d+)");
+
+	std::regex pair(R"(\([a-z¹æê³ñóœŸ¿]+,\d+\))");
+
 	std::string result;
 
 	std::cin >> result;
-
 	auto words_begin = std::sregex_iterator(result.begin(), result.end(), pair);
 
 	for (auto it = words_begin; it != std::sregex_iterator(); it++)
@@ -171,9 +173,10 @@ void Application::read_words()
 
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
-			auto wordToUpper = word->str();
+			sf::String wordToUpper = word->str();
+			for (auto& c : wordToUpper) c = chooseCharacter(c & 0xFF);
 			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
-			std::string item = wordToUpper + " " + number->str();
+			sf::String item = wordToUpper + " \t" + number->str();
 
 			std::lock_guard<std::mutex> lock(mutex);
 			wordList->addItem(item);
@@ -192,6 +195,12 @@ void Application::read_stream()
 		return;
 	}
 	clear();
+
+	if (stream == "exit")
+	{
+		close = true;
+		return;
+	}
 
 	for (int i = 1; i < stream.size(); i++)
 	{
@@ -227,15 +236,38 @@ int Application::chooseCharacter(int value)
 	switch (value)
 	{
 		// 1250 to Unicode
-	case 163: return 321; break; //Å
-	case 165: return 260; break; //Ä„
-	case 202: return 280; break; //Ä˜
-	case 221: return 211; break; //Ã“
-	case 140: return 346; break; //Åš
-	case 175: return 379; break; //Å»
-	case 198: return 262; break; //Ä†
-	case 209: return 323; break; //Åƒ
-	case 143: return 377; break; //Å¹
+	case 165: return 260; break; //¥
+	case 198: return 262; break; //Æ
+	case 202: return 280; break; //Ê
+	case 163: return 321; break; //£
+	case 209: return 323; break; //Ñ
+	case 221: return 211; break; //Ó
+	case 140: return 346; break; //Œ
+	case 143: return 377; break; //
+	case 175: return 379; break; //¯
+
+	//	//lower to lower
+	//case 185: return 261; break; //¹
+	//case 230: return 263; break; //æ
+	//case 234: return 281; break; //ê
+	//case 179: return 322; break; //³
+	//case 241: return 324; break; //ñ
+	//case 243: return 243; break; //ó
+	//case 156: return 347; break; //œ
+	//case 159: return 378; break; //Ÿ
+	//case 191: return 380; break; //¿
+
+		//lower to upper
+	case 185: return 260; break; //¹
+	case 230: return 262; break; //æ
+	case 234: return 280; break; //ê
+	case 179: return 321; break; //³
+	case 241: return 323; break; //ñ
+	case 243: return 211; break; //ó
+	case 156: return 346; break; //œ
+	case 159: return 377; break; //Ÿ
+	case 191: return 379; break; //¿
+
 	default: return value; break;
 	}
 }
@@ -306,7 +338,7 @@ void Application::run()
 		}
 	});
 
-	while (window.isOpen())
+	while (window.isOpen() && !close)
 	{
 		sf::Event event;
 		while (window.pollEvent(event))

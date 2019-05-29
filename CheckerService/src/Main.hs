@@ -24,7 +24,7 @@ beginNextCheck :: Set [Char] -> [(Int, Int)] -> IO ()
 beginNextCheck dictionary usedFields = do
     input <- getLine
     case input of
-        "exit" -> return ()
+        "exit" -> putStrLn "exit"
         "t1" -> processWords dictionary usedFields ex1 
         "t2" -> processWords dictionary usedFields ex2
         "t3" -> processWords dictionary usedFields ex3

@@ -327,6 +327,10 @@ def main():
 	time.sleep(1.5)
 	print(ex15)
 	sys.stdout.flush()
+	
+	time.sleep(5)
+	print("exit")
+	sys.stdout.flush()
 	  
 if __name__ == '__main__':
     main()

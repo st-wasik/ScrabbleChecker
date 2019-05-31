@@ -52,13 +52,14 @@ def tesseract_recognition(name, thresh=False, blur=False, ):
 def template_match_json(imgTmp, imgFin):
     img = cv2.imread(imgTmp, 0)
     img2 = img.copy()
-    template = cv2.imread(imgFin, 0)
+    template = cv2.imread(imgFin, 0)[25:148, 25:148]
     w, h = template.shape[::-1]
 
-    methods = ['cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
+    methods = ['cv2.TM_CCOEFF', 'cv2.TM_CCOEFF_NORMED', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cv2.TM_SQDIFF_NORMED']
     # index = 1
     avg_top = [0, 0]
     avg_bottom = [0, 0]
+    index=1
     for meth in methods:
 
         img = img2.copy()
@@ -74,12 +75,12 @@ def template_match_json(imgTmp, imgFin):
 
         bottom_right = (top_left[0] + w, top_left[1] + h)
 
-        avg_top[0] += top_left[0]
-        avg_top[1] += top_left[1]
+        avg_top[0] += top_left[0] * avg_met(index)
+        avg_top[1] += top_left[1] * avg_met(index)
 
-        avg_bottom[0] += bottom_right[0]
-        avg_bottom[1] += bottom_right[1]
-
+        avg_bottom[0] += bottom_right[0] * avg_met(index)
+        avg_bottom[1] += bottom_right[1] * avg_met(index)
+        index+=1
         # cv2.rectangle(img, top_left, bottom_right, 0, 5)
         # plt.subplot(121), plt.imshow(template, cmap='gray')
         # plt.title('What detection'+ str(index)), plt.xticks([]), plt.yticks([])
@@ -90,10 +91,21 @@ def template_match_json(imgTmp, imgFin):
         # #plt.pause(10)
         # #plt.close()
         # index +=1
-    avg_top[0] = avg_top[0] / 4
-    avg_top[1] = avg_top[1] / 4
-    avg_bottom[0] = avg_bottom[0] / 4
-    avg_bottom[1] = avg_bottom[1] / 4
+
+    avg_top[0] = math.ceil(avg_top[0] / 13)
+    avg_top[1] = math.ceil(avg_top[1] / 13)
+    avg_bottom[0] = math.ceil(avg_bottom[0] / 13)
+    avg_bottom[1] = math.ceil(avg_bottom[1] / 13)
+
+    tup_top = tuple(avg_top)
+    tup_bottom = tuple(avg_bottom)
+    cv2.rectangle(img, tup_top, tup_bottom, color=255, thickness=70, )
+    plt.subplot(121), plt.imshow(template, cmap='gray')
+    plt.title('What detection'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122), plt.imshow(img, cmap='gray')
+    plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
+    plt.suptitle(meth)
+    plt.show()
     return avg_top, avg_bottom
 
 
@@ -266,7 +278,7 @@ def contures():
 def create_json():
     files = []
     folder = "test_img/letters/"
-    refrence = "test_img/board.png"
+    refrence = "test_img/board_frame_00.png"
     regex = re.compile(r'/\w+\.')
     for file in os.listdir(folder):
         files.append(folder + file)
@@ -290,27 +302,27 @@ def matrix_match(matrix):
     index = 1
     for img in matrix:
         print("index {}".format(index))
-        tesseract_recognition(img)
-        #string += template_match(refrence, img, index)
+        #tesseract_recognition(img)
+        string += template_match(refrence, img, index)
         index += 1
     return string
 
 
 def main():
-    # #show_webcam(mirror=True)
-    files = []
-    folder = "test_img/letters_crop/"
-    refrence = "test_img/board_frame_00.png"
-    for file in os.listdir(folder):
-        files.append(folder + file)
-        # plot_test_images(folder + file)
-        # tesseract_recognition(folder + file)
-
-    test = ""
-    for file in files:
-        test += template_match(refrence, file)
-    print(test)
-    # create_json()
+    # # #show_webcam(mirror=True)
+    # files = []
+    # folder = "test_img/letters_crop/"
+    # refrence = "test_img/board_frame_00.png"
+    # for file in os.listdir(folder):
+    #     files.append(folder + file)
+    #     # plot_test_images(folder + file)
+    #     # tesseract_recognition(folder + file)
+    #
+    # test = ""
+    # for file in files:
+    #     test += template_match(refrence, file)
+    # print(test)
+    create_json()
 
 
 if __name__ == '__main__':

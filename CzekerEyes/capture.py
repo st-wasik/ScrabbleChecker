@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -85,6 +87,7 @@ def board_detection_ORB(testImg):
 
 def board_detection_BRISK(testImg):
     print('Detecting board...')
+    start = time.time()
 
     # Load and resize images
     refImg = cv2.imread('test_img/reference4.png', 0)
@@ -93,14 +96,18 @@ def board_detection_BRISK(testImg):
 
     if (testImg.size > 307200):
         testImg = cv2.resize(testImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+        # testImgLowRes = cv2.resize(testImg, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
+        testImgBlur = cv2.blur(testImg, (5, 5))
         colorTestImg = cv2.resize(colorTestImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
     if (refImg.size > 300000):
         refImg = cv2.resize(refImg, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+        # refImgLowRes = cv2.resize(refImg, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
+        refImgBlur = cv2.blur(refImg, (5, 5))
 
     # Create BRISK, detect keypoints and descriptions
     brisk = cv2.BRISK_create(40)
-    kp1, des1 = brisk.detectAndCompute(refImg, None)
-    kp2, des2 = brisk.detectAndCompute(testImg, None)
+    kp1, des1 = brisk.detectAndCompute(refImgBlur, None)
+    kp2, des2 = brisk.detectAndCompute(testImgBlur, None)
 
     # Create BFMatcher and knnMatch descriptions
     bf = cv2.BFMatcher()
@@ -148,6 +155,9 @@ def board_detection_BRISK(testImg):
 
         img3 = cv2.drawMatches(refImg, kp1, img2, kp2, good, None, **draw_params)
 
+        print('Finished!')
+        print('Total time: ', time.time() - start)
+
         plt.figure(dpi=450)
         plt.subplot(2,1,1), plt.imshow(warpped_board, 'gray'), plt.title('Warpped board'), plt.axis('off')
         plt.subplot(2,1,2), plt.imshow(img3, 'gray'), plt.title('Matching'), plt.axis('off')
@@ -162,7 +172,6 @@ def board_detection_BRISK(testImg):
     # result = cv2.drawMatchesKnn(refImg, kp1, testImg, kp2, good, result)
     # plt.imshow(result), plt.show()
 
-    print('Finished!')
 
 
 def draw_grid(refImg):

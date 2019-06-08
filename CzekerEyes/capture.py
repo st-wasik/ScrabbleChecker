@@ -2,12 +2,8 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import urllib
-import os
-import time
-from letters import matrix_match
 
 GOOD_MATCH_RATIO = 0.1
-
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(0)
@@ -88,6 +84,8 @@ def board_detection_ORB(testImg):
 
 
 def board_detection_BRISK(testImg):
+    print('Detecting board...')
+
     # Load and resize images
     refImg = cv2.imread('test_img/reference4.png', 0)
     colorTestImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2BGR)
@@ -140,9 +138,11 @@ def board_detection_BRISK(testImg):
         matrix = cv2.getPerspectiveTransform(dst2, board_size)
 
         warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
-        matrix_match( detect_tiles(warpped_board))
+        # matrix_match( detect_tiles(warpped_board))
+        detect_tiles(warpped_board)
         warpped_board = draw_grid(warpped_board)
         warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
+
         # cv2.imshow('warpped', warpped_board)
         # cv2.waitKey()
 
@@ -162,25 +162,20 @@ def board_detection_BRISK(testImg):
     # result = cv2.drawMatchesKnn(refImg, kp1, testImg, kp2, good, result)
     # plt.imshow(result), plt.show()
 
+    print('Finished!')
+
 
 def draw_grid(refImg):
+    print('Drawing grid...')
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     h, w, r = refImg.shape
-    print(h, w, r)
-
-    # h1 = 14
-    # w1 = 14
-    # tile = refImg[28+35*h1:28+35*(h1+1), 48+34*w1:48+34*(w1+1)]
-    # # print(tile.shape)
-    # cv2.imshow('{} {}'.format(h1,w1),tile)
-    # cv2.imshow('refImg', refImg)
-    # cv2.waitKey()
-
+    # print(h, w, r)
 
     for i in range(0, 16):
         widthDist = int((w - 230) / 16 * i)
         heightDist = int((h - 230) / 16 * i)
-        print('widthDist', widthDist, 'heightDist', heightDist)
+        # print('widthDist', widthDist, 'heightDist', heightDist)
+
         # vertical
         cv2.line(refImg, (210 + widthDist, 140), (210 + widthDist, h - 270), (0, 255, 0), 8, 1)
         # horizontal
@@ -190,8 +185,10 @@ def draw_grid(refImg):
 
 
 def detect_tiles(refImg):
+    print('Detecting tiles...')
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     tiles = []
+    position = []
     h, w, r = refImg.shape
 
     width = (210 + int((w - 230) / 16 * 1)) - (210 + int((w - 230) / 16 * 0))
@@ -202,23 +199,30 @@ def detect_tiles(refImg):
         for j in range(0, 15):
             tile = refImg[start[1] + height * i: start[1] + height * (i + 1),
                    start[0] + width * j: start[0] + width * (j + 1)]
-            # hisB = cv2.calcHist([tile], [0], None, [256], [0, 256])
-            # hisG = cv2.calcHist([tile], [1], None, [256], [0, 256])
-            # hisR = cv2.calcHist([tile], [2], None, [256], [0, 256])
-            # if (hisR[255] > 600 and hisG[225] > 10 and hisB[255] < 50):
-            #     # cv2.imshow('{}, {}'.format(h,w), tile)
-            #     tiles.append(tile)
-            tiles.append(tile)
+
+            tile_HSV = cv2.cvtColor(tile, cv2.COLOR_BGR2HSV)
+
+            h,s,v = tile_HSV.T
+
+
+            # result = abs(result)
+            # print('hist correl',  result)
+
+            if(np.median(s) < 20):
+                tiles.append(tile)
+                position.append([i,j])
+
+            # tiles.append(tile)
 
     # for i in range(0, tiles.__len__()):
     #     cv2.imshow('{}'.format(i), tiles[i])
     #     cv2.waitKey()
-    return tiles
+    return tiles, position
 
 
 def show_ip_webcam():
-    url = "http://192.168.0.102:8080/shot.jpg"
-    photoUrl = "http://192.168.0.102:8080/photoaf.jpg"
+    url = "http://192.168.43.1:8080//shot.jpg"
+    photoUrl = "http://192.168.43.1:8080//photoaf.jpg"
     img_counter = 0
     while True:
         frameRaw = urllib.request.urlopen(url)
@@ -250,12 +254,13 @@ def show_ip_webcam():
 
 
 def main():
-    # show_webcam()
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
     testImg = cv2.imread('test_img/board_frame_11.png', 1)
+
     board_detection_BRISK(testImg)
     # show_ip_webcam()
 
 
 if __name__ == '__main__':
     main()
+

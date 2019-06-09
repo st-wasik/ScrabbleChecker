@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import urllib
+from letters import matrix_match
 
 GOOD_MATCH_RATIO = 0.1
 
@@ -145,8 +146,9 @@ def board_detection_BRISK(testImg):
         matrix = cv2.getPerspectiveTransform(dst2, board_size)
 
         warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
-        # matrix_match( detect_tiles(warpped_board))
-        detect_tiles(warpped_board)
+        print(matrix_match( detect_tiles(warpped_board)))
+
+        #detect_tiles(warpped_board)
         warpped_board = draw_grid(warpped_board)
         warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
 
@@ -197,7 +199,6 @@ def detect_tiles(refImg):
     print('Detecting tiles...')
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     tiles = []
-    position = []
     h, w, r = refImg.shape
 
     width = (210 + int((w - 230) / 16 * 1)) - (210 + int((w - 230) / 16 * 0))
@@ -219,19 +220,18 @@ def detect_tiles(refImg):
 
             if(np.median(s) < 20):
                 tiles.append(tile)
-                position.append([i,j])
-
+            else:
+                tiles.append(0)
             # tiles.append(tile)
 
     # for i in range(0, tiles.__len__()):
     #     cv2.imshow('{}'.format(i), tiles[i])
     #     cv2.waitKey()
-    return tiles, position
-
+    return tiles
 
 def show_ip_webcam():
-    url = "http://192.168.43.1:8080//shot.jpg"
-    photoUrl = "http://192.168.43.1:8080//photoaf.jpg"
+    url = "http://192.168.1.102:8080//shot.jpg"
+    photoUrl = "http://192.168.1.102:8080//photoaf.jpg"
     img_counter = 0
     while True:
         frameRaw = urllib.request.urlopen(url)
@@ -266,8 +266,8 @@ def main():
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
     testImg = cv2.imread('test_img/board_frame_11.png', 1)
 
-    board_detection_BRISK(testImg)
-    # show_ip_webcam()
+    #board_detection_BRISK(testImg)
+    show_ip_webcam()
 
 
 if __name__ == '__main__':

@@ -10,12 +10,17 @@ import re
 import math
 
 
-def tesseract_recognition(name, thresh=False, blur=False, ):
-    # print (name)
-    # for i in range(0,8):
+def ich(x):
+    return {
+        '|': 'I',
+        'l': 'I',
+        '1': 'I',
+    }.get(x, x)
+
+
+def tesseract_recognition(name, thresh=False, blur=False):
     # load the example image and convert it to grayscale
-    # image = cv2.imread(name)
-    gray = cv2.cvtColor(name, cv2.COLOR_BGR2GRAY)[25:148, 25:148]
+    gray = cv2.cvtColor(name, cv2.COLOR_BGR2GRAY)[20:153, 20:153]
 
     # check to see if we should apply thresholding to preprocess the
     # image
@@ -47,6 +52,9 @@ def tesseract_recognition(name, thresh=False, blur=False, ):
     cv2.imshow("Image", name)
     cv2.imshow("Output", gray)
     cv2.waitKey(0)
+    if not text:
+        return "I"
+    return ich(text[0])
 
 
 def template_match_json(imgTmp, imgFin):
@@ -302,8 +310,11 @@ def matrix_match(matrix):
     index = 1
     for img in matrix:
         print("index {}".format(index))
-        #tesseract_recognition(img)
-        string += template_match(refrence, img, index)
+        if isinstance(img, int):
+            string += " "
+        else:
+            string += tesseract_recognition(img, True)
+            #string += template_match(refrence, img, index)
         index += 1
     return string
 

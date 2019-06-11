@@ -41,7 +41,7 @@ private:
 
 	std::shared_ptr<tgui::ListBox> wordList;
 
-	int chooseCharacter(int value);
+	int convertCharacter(int value);
 
 	std::mutex mutex;
 

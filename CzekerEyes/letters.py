@@ -45,15 +45,18 @@ def tesseract_recognition(name, thresh=False, blur=False):
     text = pytesseract.image_to_string(Image.open(filename), lang="pol",
                                        config="-c tessedit_char_whitelist=AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ --psm 10")
     os.remove(filename)
-    # print("lol")
-    print(text)
+    # #print("lol")
+    #print(text)
 
     # show the output images
-    cv2.imshow("Image", name)
-    cv2.imshow("Output", gray)
-    cv2.waitKey(0)
+    # cv2.imshow("Image", name)
+    # cv2.imshow("Output", gray)
+    # cv2.waitKey(0)
     if not text:
         return "I"
+    for x in text:
+        if x.isalpha():
+            return ich(x)
     return ich(text[0])
 
 
@@ -67,7 +70,7 @@ def template_match_json(imgTmp, imgFin):
     # index = 1
     avg_top = [0, 0]
     avg_bottom = [0, 0]
-    index=1
+    index = 1
     for meth in methods:
 
         img = img2.copy()
@@ -88,7 +91,7 @@ def template_match_json(imgTmp, imgFin):
 
         avg_bottom[0] += bottom_right[0] * avg_met(index)
         avg_bottom[1] += bottom_right[1] * avg_met(index)
-        index+=1
+        index += 1
         # cv2.rectangle(img, top_left, bottom_right, 0, 5)
         # plt.subplot(121), plt.imshow(template, cmap='gray')
         # plt.title('What detection'+ str(index)), plt.xticks([]), plt.yticks([])
@@ -183,7 +186,7 @@ def template_match(imgTmp, imgFin, ink):
             avg_top = [1, 1]
             avg_bottom = [1, 1]
             break
-        print("top: ", top_left, "bottom: ", bottom_right)
+        # print("top: ", top_left, "bottom: ", bottom_right)
         avg_top[0] += top_left[0] * avg_met(index)
         avg_top[1] += top_left[1] * avg_met(index)
 
@@ -251,18 +254,18 @@ def template_match(imgTmp, imgFin, ink):
         plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
         plt.suptitle(meth)
         plt.show()
-    print(avg_top, avg_bottom)
+    # print(avg_top, avg_bottom)
     f = open("letters.json", 'r')
     letters_json = json.loads(f.read())
     for letter, cords in letters_json.items():
-        # print(cords, [avg_top, avg_bottom])
+        # #print(cords, [avg_top, avg_bottom])
         if cords == [avg_top, avg_bottom]:
-            print(letter)
+            # print(letter)
             return switch(letter)
 
         # else:
-        # print(letter, "NOPE")
-    print("Nope")
+        # #print(letter, "NOPE")
+    # print("Nope")
     return " "
 
 
@@ -295,8 +298,8 @@ def create_json():
         match = re.search(regex, file)
         if match:
             name = match.group(0)[1:-1]
-        else:
-            print("FUCK")
+        # else:
+        # print("FUCK")
         tmp = template_match_json(refrence, file)
         letters_json[name] = tmp
     x = json.dumps(letters_json)
@@ -309,14 +312,14 @@ def matrix_match(matrix):
     string = ""
     index = 1
     for img in matrix:
-        print("index {}".format(index))
+        # print("index {}".format(index))
         if isinstance(img, int):
             string += " "
         else:
             string += tesseract_recognition(img, True)
-            #string += template_match(refrence, img, index)
+            # string += template_match(refrence, img, index)
         index += 1
-    return string
+    return string.lower()
 
 
 def main():
@@ -332,7 +335,7 @@ def main():
     # test = ""
     # for file in files:
     #     test += template_match(refrence, file)
-    # print(test)
+    # #print(test)
     create_json()
 
 

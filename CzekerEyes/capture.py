@@ -5,8 +5,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 import urllib
 from letters import matrix_match
+import sys
 
 GOOD_MATCH_RATIO = 0.1
+
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(0)
@@ -24,7 +26,7 @@ def show_webcam(mirror=False):
             # Spacebar pressed
             img_name = 'opencv_frame_{}.png'.format(img_counter)
             cv2.imwrite(img_name, frame)
-            print("{} written!".format(img_name))
+            # print("{} written!".format(img_name))
             img_counter += 1
 
     cv2.destroyAllWindows()
@@ -76,8 +78,8 @@ def board_detection_ORB(testImg):
     matches = bf.match(des1, des2)
     matches = sorted(matches, key=lambda x: x.distance)
 
-    for m in matches:
-        print(m.distance)
+    # for m in matches:
+    # print(m.distance)
 
     plt.figure(dpi=500)
     result = np.zeros((1000, 1000, 3), np.uint8)
@@ -87,7 +89,7 @@ def board_detection_ORB(testImg):
 
 
 def board_detection_BRISK(testImg):
-    print('Detecting board...')
+    # print('Detecting board...')
     start = time.time()
 
     # Load and resize images
@@ -146,26 +148,26 @@ def board_detection_BRISK(testImg):
         matrix = cv2.getPerspectiveTransform(dst2, board_size)
 
         warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
-        print(matrix_match( detect_tiles(warpped_board)))
+        print(matrix_match(detect_tiles(warpped_board)))
 
-        #detect_tiles(warpped_board)
-        warpped_board = draw_grid(warpped_board)
-        warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
-
-        # cv2.imshow('warpped', warpped_board)
-        # cv2.waitKey()
-
-        img3 = cv2.drawMatches(refImg, kp1, img2, kp2, good, None, **draw_params)
-
-        print('Finished!')
-        print('Total time: ', time.time() - start)
-
-        plt.figure(dpi=450)
-        plt.subplot(2,1,1), plt.imshow(warpped_board, 'gray'), plt.title('Warpped board'), plt.axis('off')
-        plt.subplot(2,1,2), plt.imshow(img3, 'gray'), plt.title('Matching'), plt.axis('off')
-        plt.show()
+        # #detect_tiles(warpped_board)
+        # warpped_board = draw_grid(warpped_board)
+        # warpped_board = cv2.cvtColor(warpped_board, cv2.COLOR_RGB2BGR)
+        #
+        # # cv2.imshow('warpped', warpped_board)
+        # # cv2.waitKey()
+        #
+        # img3 = cv2.drawMatches(refImg, kp1, img2, kp2, good, None, **draw_params)
+        #
+        # #print('Finished!')
+        # #print('Total time: ', time.time() - start)
+        #
+        # plt.figure(dpi=450)
+        # plt.subplot(2,1,1), plt.imshow(warpped_board, 'gray'), plt.title('Warpped board'), plt.axis('off')
+        # plt.subplot(2,1,2), plt.imshow(img3, 'gray'), plt.title('Matching'), plt.axis('off')
+        # plt.show()
     else:
-        print('Not enough matches found!')
+        # print('Not enough matches found!')
         matchesMask = None
 
     # # Plot results
@@ -175,17 +177,16 @@ def board_detection_BRISK(testImg):
     # plt.imshow(result), plt.show()
 
 
-
 def draw_grid(refImg):
-    print('Drawing grid...')
+    # print('Drawing grid...')
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     h, w, r = refImg.shape
-    # print(h, w, r)
+    # #print(h, w, r)
 
     for i in range(0, 16):
         widthDist = int((w - 230) / 16 * i)
         heightDist = int((h - 230) / 16 * i)
-        # print('widthDist', widthDist, 'heightDist', heightDist)
+        # #print('widthDist', widthDist, 'heightDist', heightDist)
 
         # vertical
         cv2.line(refImg, (210 + widthDist, 140), (210 + widthDist, h - 270), (0, 255, 0), 8, 1)
@@ -196,7 +197,7 @@ def draw_grid(refImg):
 
 
 def detect_tiles(refImg):
-    print('Detecting tiles...')
+    # print('Detecting tiles...')
     refImg = cv2.cvtColor(refImg, cv2.COLOR_RGB2BGR)
     tiles = []
     h, w, r = refImg.shape
@@ -212,13 +213,12 @@ def detect_tiles(refImg):
 
             tile_HSV = cv2.cvtColor(tile, cv2.COLOR_BGR2HSV)
 
-            h,s,v = tile_HSV.T
-
+            h, s, v = tile_HSV.T
 
             # result = abs(result)
-            # print('hist correl',  result)
+            # #print('hist correl',  result)
 
-            if(np.median(s) < 20):
+            if (np.median(s) < 20):
                 tiles.append(tile)
             else:
                 tiles.append(0)
@@ -228,6 +228,7 @@ def detect_tiles(refImg):
     #     cv2.imshow('{}'.format(i), tiles[i])
     #     cv2.waitKey()
     return tiles
+
 
 def show_ip_webcam():
     url = "http://192.168.1.102:8080//shot.jpg"
@@ -246,7 +247,7 @@ def show_ip_webcam():
         #     # Spacebar pressed
         #     img_name = 'board_frame_{}.png'.format(img_counter)
         #     cv2.imwrite(img_name, frame)
-        #     print("{} written!".format(img_name))
+        #     #print("{} written!".format(img_name))
         #     img_counter += 1
         elif k == 32:
             # Spacebar pressed
@@ -256,7 +257,7 @@ def show_ip_webcam():
             # frame = cv2.resize(frame, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA)
             img_name = 'board_frame_{}.png'.format(img_counter)
             cv2.imwrite(img_name, frame)
-            print("{} written!".format(img_name))
+            # print("{} written!".format(img_name))
             img_counter += 1
 
             board_detection_BRISK(frame)
@@ -266,10 +267,10 @@ def main():
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
     testImg = cv2.imread('test_img/board_frame_11.png', 1)
 
-    #board_detection_BRISK(testImg)
-    show_ip_webcam()
+    board_detection_BRISK(testImg)
+
+    # show_ip_webcam()
 
 
 if __name__ == '__main__':
     main()
-

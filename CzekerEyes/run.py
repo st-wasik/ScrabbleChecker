@@ -1,23 +1,23 @@
-﻿import random
-import string
+﻿import capture
 import time
 import sys
-
+import capture as cap
+import cv2
 begin = "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "  scrabble     " + \
-      "               " + \
-      "      czeker   " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               "
+        "               " + \
+        "               " + \
+        "               " + \
+        "               " + \
+        "               " + \
+        "  scrabble     " + \
+        "               " + \
+        "      czeker   " + \
+        "               " + \
+        "               " + \
+        "               " + \
+        "               " + \
+        "               " + \
+        "               "
 
 ex1 = "               " + \
       "               " + \
@@ -131,7 +131,6 @@ ex7 = "               " + \
       "        m      " + \
       "               "
 
-
 ex8 = "               " + \
       "               " + \
       "               " + \
@@ -147,7 +146,7 @@ ex8 = "               " + \
       "  maj   o      " + \
       "        m      " + \
       "               "
-  
+
 ex9 = "               " + \
       "               " + \
       "               " + \
@@ -162,175 +161,115 @@ ex9 = "               " + \
       "    akordeon   " + \
       "  maj   o      " + \
       "        m      " + \
-      "               "	  
-	  
+      "               "
+
 ex10 = "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o      " + \
-      "        m      " + \
-      "               "	  	 
+       "               " + \
+       "               " + \
+       "               " + \
+       "               " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o      " + \
+       "        m      " + \
+       "               "
 
 ex11 = "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o      " + \
-      "       ćma     " + \
-      "               "	  	 
+       "               " + \
+       "               " + \
+       "               " + \
+       "               " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o      " + \
+       "       ćma     " + \
+       "               "
 
 ex12 = "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o  ó   " + \
-      "       ćma ż   " + \
-      "               "	  	 
+       "               " + \
+       "               " + \
+       "               " + \
+       "               " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o  ó   " + \
+       "       ćma ż   " + \
+       "               "
 
 ex13 = "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "               " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o  ó   " + \
-      "       ćma żółć" + \
-      "               "	  	 
+       "               " + \
+       "               " + \
+       "               " + \
+       "               " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o  ó   " + \
+       "       ćma żółć" + \
+       "               "
 
 ex14 = "               " + \
-      "      p        " + \
-      "      a        " + \
-      "      j        " + \
-      "      ą        " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o  ó   " + \
-      "       ćma żółć" + \
-      "               "	  
-	  
+       "      p        " + \
+       "      a        " + \
+       "      j        " + \
+       "      ą        " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o  ó   " + \
+       "       ćma żółć" + \
+       "               "
+
 ex15 = "               " + \
-      "      p        " + \
-      "     maź       " + \
-      "      j        " + \
-      "      ą        " + \
-      "      koń      " + \
-      "    t  s       " + \
-      "    r  i       " + \
-      "    apteka     " + \
-      "    m  m       " + \
-      "    w          " + \
-      "    akordeon   " + \
-      "  maj   o  ó   " + \
-      "       ćma żółć" + \
-      "               "	  
+       "      p        " + \
+       "     maź       " + \
+       "      j        " + \
+       "      ą        " + \
+       "      koń      " + \
+       "    t  s       " + \
+       "    r  i       " + \
+       "    apteka     " + \
+       "    m  m       " + \
+       "    w          " + \
+       "    akordeon   " + \
+       "  maj   o  ó   " + \
+       "       ćma żółć" + \
+       "               "
 
 
 def main():
-	test="to jest test znaków grzegorz brzęczyszczykiewicz chrząszczyrzewoszyce powiat łękołody śćół"
-	n = 255-len(test)
-	test2 =''.join(random.choices(string.ascii_lowercase, k=n))
-	print(begin)
-	sys.stdout.flush()
-	
-	time.sleep(20)
-	print(ex1)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex2)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex3)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex4)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex5)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex6)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex7)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex8)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex9)
-	sys.stdout.flush()
+    print(begin)
+    sys.stdout.flush()
+    time.sleep(30)
 
-	time.sleep(1.5)
-	print(ex10)
-	sys.stdout.flush()
+    testImg = cv2.imread('test_img/board_frame_11.png', 1)
+    cap.board_detection_BRISK(testImg)
+    #cap.show_ip_webcam()
 
-	time.sleep(1.5)
-	print(ex11)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex12)
-	sys.stdout.flush()
-	
-	time.sleep(1.5)
-	print(ex13)
-	sys.stdout.flush()
 
-	time.sleep(1.5)
-	print(ex14)
-	sys.stdout.flush()
 
-	time.sleep(1.5)
-	print(ex15)
-	sys.stdout.flush()
-	
-	time.sleep(5)
-	print("exit")
-	sys.stdout.flush()
-	  
 if __name__ == '__main__':
     main()

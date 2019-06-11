@@ -174,7 +174,7 @@ void Application::read_words()
 		if (word != std::sregex_iterator() && number != std::sregex_iterator())
 		{
 			sf::String wordToUpper = word->str();
-			for (auto& c : wordToUpper) c = chooseCharacter(c & 0xFF);
+			for (auto& c : wordToUpper) c = convertCharacter(c & 0xFF);
 			std::transform(wordToUpper.begin(), wordToUpper.end(), wordToUpper.begin(), ::toupper);
 			sf::String item = wordToUpper + " \t" + number->str();
 
@@ -216,7 +216,7 @@ void Application::read_stream()
 					//std::mbtowc(&letter, &stream[i], 10);
 					
 					//addTile(letter, counterx, countery, stream[i + 1]);
-					addTile(chooseCharacter(((unsigned int)stream[i]) & 0xFF) , counterx, countery, stream[i + 1]);
+					addTile(convertCharacter(((unsigned int)stream[i]) & 0xFF) , counterx, countery, stream[i + 1]);
 				}
 				countery++;
 				if (countery > 14)
@@ -231,7 +231,7 @@ void Application::read_stream()
 	read_words();
 }
 
-int Application::chooseCharacter(int value)
+int Application::convertCharacter(int value)
 {
 	switch (value)
 	{

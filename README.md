@@ -10,3 +10,10 @@ If you want to run this program for other languages you have to change dictionar
 ### Docs
 For more information refer to documentation located in __docs__ directory.
 
+### Examples
+
+<center><img src="https://github.com/st-wasik/ScrabbleChecker/blob/master/docs/example0.png?raw=true" width="100%" height="100%"/></center>
+
+<center><img src="https://github.com/st-wasik/ScrabbleChecker/blob/master/docs/example1.png?raw=true" width="100%" height="100%"/></center>
+
+<center><img src="https://github.com/st-wasik/ScrabbleChecker/blob/master/docs/example2.png?raw=true" width="100%" height="100%"/></center>

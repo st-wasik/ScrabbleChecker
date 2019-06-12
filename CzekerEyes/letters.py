@@ -15,6 +15,7 @@ def ich(x):
         '|': 'I',
         'l': 'I',
         '1': 'I',
+		'0': 'O'
     }.get(x, x)
 
 
@@ -41,7 +42,7 @@ def tesseract_recognition(name, thresh=False, blur=False):
 
     # load the image as a PIL/Pillow image, apply OCR, and then delete
     # the temporary file
-    pytesseract.pytesseract.tesseract_cmd = r'D:\Programy\Tesseract-OCR\tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
     text = pytesseract.image_to_string(Image.open(filename), lang="pol",
                                        config="-c tessedit_char_whitelist=AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ --psm 10")
     os.remove(filename)

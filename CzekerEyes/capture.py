@@ -3,6 +3,7 @@ import time
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import urllib.request
 import urllib
 from letters import matrix_match
 import sys
@@ -62,7 +63,7 @@ def plot_test_images(img):
 
 
 def board_detection_ORB(testImg):
-    refImg = cv2.imread('test_img/reference2.jpg', 0)
+    refImg = cv2.imread('CzekerEyes/test_img/reference2.jpg', 0)
     cv2.imshow('reference', refImg)
 
     orb = cv2.ORB_create(500)
@@ -89,11 +90,11 @@ def board_detection_ORB(testImg):
 
 
 def board_detection_BRISK(testImg):
-    # print('Detecting board...')
+   # print('Detecting board...')
     start = time.time()
 
     # Load and resize images
-    refImg = cv2.imread('test_img/reference4.png', 0)
+    refImg = cv2.imread('CzekerEyes/test_img/reference4.png', 0)
     colorTestImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2BGR)
     testImg = cv2.cvtColor(testImg, cv2.COLOR_RGB2GRAY)
 
@@ -149,6 +150,7 @@ def board_detection_BRISK(testImg):
 
         warpped_board = cv2.warpPerspective(colorTestImg, matrix, (3000, 3000))
         print(matrix_match(detect_tiles(warpped_board)))
+        sys.stdout.flush()
 
         # #detect_tiles(warpped_board)
         # warpped_board = draw_grid(warpped_board)
@@ -205,6 +207,8 @@ def detect_tiles(refImg):
     width = (210 + int((w - 230) / 16 * 1)) - (210 + int((w - 230) / 16 * 0))
     height = (140 + int((h - 230) / 16 * 1)) - (140 + int((h - 230) / 16 * 0))
     start = [(210 + int((w - 230) / 16 * 0)), (140 + int((h - 230) / 16 * 0))]
+	
+    f = open('wynik.txt', "w+")
 
     for i in range(0, 15):
         for j in range(0, 15):
@@ -217,8 +221,12 @@ def detect_tiles(refImg):
 
             # result = abs(result)
             # #print('hist correl',  result)
-
-            if (np.median(s) < 20):
+            #print(np.average(s))
+            f.write(str(i)+" ")
+            f.write(str(j)+" ")
+            f.write(str(np.median(s))+"\n")
+            f.write(str(np.average(s))+"\n")
+            if (np.median(s) < 40):
                 tiles.append(tile)
             else:
                 tiles.append(0)
@@ -227,12 +235,13 @@ def detect_tiles(refImg):
     # for i in range(0, tiles.__len__()):
     #     cv2.imshow('{}'.format(i), tiles[i])
     #     cv2.waitKey()
+    f.close()
     return tiles
 
 
 def show_ip_webcam():
-    url = "http://192.168.1.102:8080//shot.jpg"
-    photoUrl = "http://192.168.1.102:8080//photoaf.jpg"
+    url = "http://192.168.43.1:8080//shot.jpg"
+    photoUrl = "http://192.168.43.1:8080//photoaf.jpg"
     img_counter = 0
     while True:
         frameRaw = urllib.request.urlopen(url)
@@ -261,11 +270,11 @@ def show_ip_webcam():
             img_counter += 1
 
             board_detection_BRISK(frame)
-
+            #print("get photo")
 
 def main():
     # testImg = cv2.imread('test_img/one_place.jpg', 0)
-    testImg = cv2.imread('test_img/board_frame_11.png', 1)
+    testImg = cv2.imread('CzekerEyes/test_img/board_frame_11.png', 1)
 
     board_detection_BRISK(testImg)
 

@@ -97,7 +97,7 @@ printOutPoints' ((str, p):xs) = do
 	putStr ","
 	putStr $ show p
 	putStr ")"
-	if length xs > 0 then putStr ", " else putStr ""
+	if length xs > 0 then putStr "," else putStr ""
 	printOutPoints' xs
 	
 printOutPoints' [] = do

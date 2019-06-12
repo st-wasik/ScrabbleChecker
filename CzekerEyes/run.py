@@ -1,4 +1,4 @@
-﻿import capture
+import capture
 import time
 import sys
 import capture as cap
@@ -263,11 +263,11 @@ ex15 = "               " + \
 def main():
     print(begin)
     sys.stdout.flush()
-    time.sleep(30)
+    time.sleep(15)
 
-    testImg = cv2.imread('test_img/board_frame_11.png', 1)
-    cap.board_detection_BRISK(testImg)
-    #cap.show_ip_webcam()
+    #testImg = cv2.imread('board_frame_0.png', 1)
+    #cap.board_detection_BRISK(testImg)
+    cap.show_ip_webcam()
 
 
 
